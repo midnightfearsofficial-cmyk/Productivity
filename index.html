@@ -1880,7 +1880,55 @@
     function exportData() { let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)); let dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr); dlAnchorElem.setAttribute("download", "tuition_lord_save.json"); dlAnchorElem.click(); }
     function importData() { let input = prompt("Paste your JSON save data here:"); if(input) { try { db = JSON.parse(input); save(); notify("Data Imported Successfully!", "var(--neon-green)"); loadMission(); } catch(e) { alert("Invalid save data!"); } } }
 
-    loadMission(); renderQuests(); updateUI();
+    // FEATURE: Auto-select next incomplete mission on load
+    function autoSelectNextMission() {
+        let selectElement = document.getElementById('day-selector');
+        let options = selectElement.options;
+        let targetDay = options[0].value; // Defaults to the first day if nothing is found
+
+        // Find the first option that has children
+        let firstValidOptionIndex = 0;
+        for(let i=0; i<options.length; i++) {
+            if(options[i].value) {
+                firstValidOptionIndex = i;
+                targetDay = options[i].value;
+                break;
+            }
+        }
+
+        for(let i = firstValidOptionIndex; i < options.length; i++) {
+            let dayKey = options[i].value;
+            if (!dayKey) continue; // Skip if it's an empty value (like optgroups)
+
+            let missionObj = allMissions[dayKey];
+            let isComplete = true;
+
+            if (missionObj && missionObj.tasks) {
+                let safeVal = dayKey.replace(/\s+/g, '');
+                for(let j = 0; j < missionObj.tasks.length; j++) {
+                    let taskId = safeVal + "_" + j;
+                    if(!db.completedTasks[taskId]) {
+                        isComplete = false;
+                        break;
+                    }
+                }
+            } else {
+                // If no tasks are defined, treat as complete so it skips to next
+            }
+
+            if (!isComplete) {
+                targetDay = dayKey;
+                break;
+            }
+        }
+
+        selectElement.value = targetDay;
+    }
+
+    autoSelectNextMission(); // Set the dropdown to the correct day
+    loadMission();           // Load that day's UI
+    renderQuests(); 
+    updateUI();
 </script>
 
 <script type="module">
@@ -1900,11 +1948,11 @@
   const app = initializeApp(firebaseConfig);
   const firestoreDb = getFirestore(app);
 
-  // আপনার মূল কোড থেকে কল করার জন্য ফাংশনটিকে গ্লোবাল করে দেওয়া হলো
+  // আপনার মূল কোড থেকে কল করার জন্য ফাংশনটিকে গ্লোবাল করে দেওয়া হলো
   window.syncTaskToFirebase = async function(taskId, isCompleted, taskName) {
     try {
       const taskRef = doc(firestoreDb, "daily_tasks", taskId);
-      // setDoc এবং merge: true ব্যবহার করায় টাস্ক চেক বা আনচেক করলে একই ফাইলে আপডেট হবে
+      // setDoc এবং merge: true ব্যবহার করায় টাস্ক চেক বা আনচেক করলে একই ফাইলে আপডেট হবে
       await setDoc(taskRef, {
         id: taskId,
         name: taskName,
