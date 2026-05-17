@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tuition Lord: Dopamine Overdrive Edition</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@500;700&display=swap');
+
+        /* Default Dark Theme Variables */
+        :root {
+            --bg-dark: #09090b;
+            --card-bg: #18181b;
+            --neon-blue: #0ea5e9;
+            --neon-purple: #8b5cf6;
+            --neon-green: #10b981;
+            --neon-red: #ef4444;
+            --neon-orange: #f59e0b;
+            --neon-pink: #ec4899;
+            --yt-red: #ff0000;
+            --fb-blue: #1877f2;
+            --text-main: #f8fafc;
+            --text-muted: #71717a;
+            --gold: #ffd700;
+            --border-color: rgba(255, 255, 255, 0.05);
+            --inner-bg: #000;
+            --input-bg: #222;
+        }
+
+        /* LIGHT MODE / DAY SHIFT THEME - PREMIUM AESTHETIC */
+        body.light-mode {
+            --bg-dark: #f4f5f7;        /* Soft warm grey background */
+            --card-bg: #ffffff;        /* Pure white cards */
+            --text-main: #1e293b;      /* Deep slate for high readability */
+            --text-muted: #64748b;     /* Cool grey for muted elements */
+            --border-color: rgba(15, 23, 42, 0.08); 
+            --inner-bg: #f8fafc;       /* Very light blue-grey for inner panels */
+            --input-bg: #ffffff;
+            
+            /* Refined Accents (Teal, Blue, Rose instead of harsh neons) */
+            --neon-blue: #0d9488;      /* Teal/Cyan focus */
+            --neon-purple: #6366f1;    /* Indigo */
+            --neon-green: #059669;     /* Emerald */
+            --neon-red: #e11d48;       /* Rose/Red */
+            --neon-pink: #d946ef;      /* Fuchsia */
+            --neon-orange: #ea580c;    /* Warm Orange */
+            --gold: #d97706;
+        }
+
+        /* Light Mode Specific Overrides for better visual hierarchy */
+        body.light-mode .card, body.light-mode .header, body.light-mode .stat-box {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+        }
+        body.light-mode .action-btn { color: white !important; text-shadow: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        body.light-mode .stat-box { background: #ffffff; }
+        body.light-mode .flow-box, body.light-mode .pomodoro-container { background: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        body.light-mode .action-item:hover { background: #f1f5f9; border-color: var(--neon-blue); transform: translateX(5px); }
+        body.light-mode .shop-item:hover { background: #fff7ed; border-color: var(--neon-orange); transform: scale(1.02); }
+        body.light-mode .task-checkbox-container { background: rgba(5, 150, 105, 0.04); border: 1px solid rgba(5, 150, 105, 0.15); }
+        body.light-mode .task-checkbox-container:hover { background: rgba(5, 150, 105, 0.08); }
+        body.light-mode .boss-btn { color: white !important; }
+
+        /* True Crime Theme Variables */
+        body.theme-true-crime {
+            --bg-dark: #0a0000;
+            --card-bg: #1a0505;
+            --neon-blue: #dc2626;
+            --neon-purple: #991b1b;
+            --neon-green: #b91c1c;
+            --neon-red: #ff0000;
+            --neon-orange: #f87171;
+            --neon-pink: #ef4444;
+            --text-main: #fecaca;
+            --text-muted: #991b1b;
+        }
+
+        /* Midwest Emo Theme Variables */
+        body.theme-midwest-emo {
+            --bg-dark: #1e1e24;
+            --card-bg: #2b2b36;
+            --neon-blue: #93c5fd;
+            --neon-purple: #c4b5fd;
+            --neon-green: #6ee7b7;
+            --neon-red: #fca5a5;
+            --neon-orange: #fcd34d;
+            --neon-pink: #f9a8d4;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+
+        /* FEATURE 4: Red Zone Styles */
+        body.red-zone {
+            box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.4);
+            border: 2px solid var(--neon-red);
+        }
+        .red-zone-alert {
+            display: none; position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+            background: var(--neon-red); color: white; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; z-index: 1000; font-family: 'Orbitron';
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.8); animation: pulse-red 1.5s infinite;
+        }
+        @keyframes pulse-red { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* NEW FEATURE: Low HP Warning */
+        body.low-hp-warning {
+            box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.6);
+            animation: heartbeat-pulse 1s infinite alternate;
+        }
+        @keyframes heartbeat-pulse {
+            0% { box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.3); }
+            100% { box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.8); border: 2px solid var(--neon-red); }
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        body.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            transition: 0.3s;
+        }
+
+        .dashboard.streak-7 { box-shadow: 0 0 30px rgba(245, 158, 11, 0.15); }
+        .dashboard.streak-14 { animation: fire-glow 2s infinite alternate; }
+        @keyframes fire-glow {
+            from { box-shadow: 0 0 20px var(--neon-orange), inset 0 0 10px var(--neon-orange); }
+            to { box-shadow: 0 0 40px var(--neon-red), inset 0 0 20px var(--neon-red); }
+        }
+
+        .header {
+            grid-column: span 2; text-align: center; padding: 20px; background: var(--card-bg);
+            border-radius: 12px; border: 2px solid var(--neon-purple); box-shadow: 0 0 25px rgba(139, 92, 246, 0.2);
+            position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; transition: 0.3s;
+        }
+
+        .sprint-banner {
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+            color: white; padding: 10px 20px; border-radius: 8px; font-weight: bold; font-family: 'Orbitron';
+            text-align: center; margin-bottom: 15px; box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+            animation: pulse-glow 2s infinite alternate; letter-spacing: 1px; width: 80%;
+        }
+        @keyframes pulse-glow { from { box-shadow: 0 0 10px var(--neon-purple); } to { box-shadow: 0 0 25px var(--neon-pink); } }
+
+        .header h1 {
+            font-family: 'Orbitron', sans-serif; color: var(--text-main); margin: 0; font-size: 2.5em; text-transform: uppercase; text-shadow: 0 0 10px rgba(139, 92, 246, 0.3);
+        }
+
+        .theme-selector { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; }
+        .mode-toggle-container { position: absolute; top: 10px; right: 10px; }
+        
+        .theme-btn, .mode-btn { 
+            background: var(--inner-bg); 
+            border: 1px solid var(--border-color); 
+            color: var(--text-main); 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.8em; 
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+        .theme-btn:hover, .mode-btn:hover { background: var(--neon-purple); color: white; border-color: var(--neon-purple); }
+
+        .stats-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; grid-column: span 2; }
+        .stat-box {
+            background: var(--card-bg); padding: 20px; border-radius: 10px; text-align: center; border: 1px solid var(--border-color); box-shadow: inset 0 0 10px rgba(0,0,0,0.05); position: relative; transition: 0.3s;
+        }
+        .stat-value { font-family: 'Orbitron', sans-serif; font-size: 2.2em; font-weight: bold; margin: 10px 0; }
+        
+        .hp-bar-container { background: var(--inner-bg); border-radius: 5px; height: 10px; width: 100%; margin-top: 10px; overflow: hidden; position: relative; border: 1px solid var(--border-color);}
+        .hp-bar { height: 100%; width: 100%; background: linear-gradient(90deg, #991b1b, var(--neon-red)); transition: width 0.3s ease-in-out; }
+
+        .vault-box { grid-column: span 2; background: var(--card-bg); border: 2px solid var(--gold); padding: 15px; border-radius: 8px; text-align: center; margin-bottom: -5px; transition: 0.3s;}
+        .vault-value { font-family: 'Orbitron'; font-size: 1.8em; color: var(--gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); font-weight: bold;}
+        .vault-bleed { color: var(--neon-red); font-weight: bold; animation: fadeOutUp 2s forwards; display: none;}
+        @keyframes fadeOutUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
+
+        .flow-box { grid-column: span 2; background: var(--inner-bg); border: 1px solid var(--neon-blue); padding: 15px; border-radius: 8px; text-align: center; transition: 0.3s;}
+        .flow-bar-container { width: 100%; height: 12px; background: var(--border-color); border-radius: 6px; margin-top: 8px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.1);}
+        .flow-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink)); transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);}
+        .frenzy-active { animation: pulse-frenzy 1s infinite alternate; border-color: var(--neon-pink); background: rgba(236, 72, 153, 0.1); }
+        @keyframes pulse-frenzy { from { box-shadow: 0 0 10px rgba(236,72,153,0.3); } to { box-shadow: 0 0 30px rgba(236,72,153,0.8); } }
+
+        .card { background: var(--card-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); transition: 0.3s;}
+        h2 { color: var(--neon-blue); margin-top: 0; font-size: 1.4em; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+
+        .mission-selector { width: 100%; padding: 12px; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--neon-pink); border-radius: 6px; font-family: inherit; font-size: 1.1em; font-weight: bold; margin-bottom: 15px; }
+        .mission-desc { background: rgba(236, 72, 153, 0.05); padding: 20px; border-left: 4px solid var(--neon-pink); margin: 15px 0; border-radius: 0 8px 8px 0; min-height: 50px; color: var(--text-main); }
+
+        .scrollable-list { max-height: 400px; overflow-y: auto; padding-right: 5px; }
+        .scrollable-list::-webkit-scrollbar { width: 6px; }
+        .scrollable-list::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
+
+        .action-list, .shop-grid, .inventory-grid { list-style: none; padding: 0; margin: 0; }
+        .action-item, .shop-item, .inventory-item, .quest-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: var(--inner-bg); margin-bottom: 10px; border-radius: 8px; border: 1px solid transparent; cursor: pointer; transition: 0.2s; color: var(--text-main); }
+        .action-item:hover, .quest-item:hover { border-color: var(--neon-green); background: rgba(16, 185, 129, 0.1); transform: translateX(5px); }
+        .action-btn { background: var(--neon-green); color: #000; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor:pointer;}
+        
+        .shop-item:hover { border-color: var(--neon-orange); background: rgba(245, 158, 11, 0.1); transform: scale(1.02); }
+        .shop-icon { font-size: 1.5em; margin-right: 15px; width: 30px; text-align: center;}
+        .price { font-family: 'Orbitron'; color: var(--neon-green); font-weight: bold; background: rgba(0,0,0,0.1); padding: 5px 10px; border-radius: 5px;}
+
+        .loot-box { background: linear-gradient(135deg, #1e3a8a, #9333ea); border: 2px solid #38bdf8; text-align: center; padding: 20px; border-radius: 10px; cursor: pointer; animation: glow 2s infinite alternate; margin-top: 15px; position: relative;}
+        @keyframes glow { from { box-shadow: 0 0 10px rgba(147, 51, 234, 0.5); } to { box-shadow: 0 0 30px rgba(56, 189, 248, 0.8); } }
+
+        .notification { position: fixed; top: 20px; right: 20px; background: var(--neon-green); color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; font-size: 1.1em; transform: translateX(150%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+        .flex-center { display: flex; align-items: center; }
+
+        .tools-bar { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap; justify-content: center;}
+        .tool-btn { background: var(--inner-bg); color: var(--text-main); border: 1px solid var(--border-color); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8em; font-weight:bold; transition: 0.3s;}
+        .tool-btn:hover { background: var(--neon-purple); border-color: var(--neon-purple); color:white !important; }
+
+        .pomodoro-container { text-align: center; padding: 15px; background: var(--inner-bg); border-radius: 8px; margin-bottom: 20px; border: 1px dashed var(--neon-blue); position: relative; transition: 0.3s;}
+        .timer-display { font-family: 'Orbitron'; font-size: 3em; color: var(--neon-blue); font-weight: bold; margin: 10px 0; transition: 0.3s;}
+        .timer-btn { background: var(--neon-blue); color: white; border: none; padding: 8px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; margin: 0 5px; }
+        .timer-btn.stop { background: var(--neon-red); }
+        .timer-btn.panic { background: var(--neon-orange); color: white; margin-top:10px; width: 100%; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);}
+        .audio-player { width: 100%; margin-top: 10px; height: 30px; border-radius: 5px; display: none; }
+        .music-select { background: var(--input-bg); color: var(--neon-purple); border: 1px solid var(--neon-purple); padding: 5px; border-radius: 5px; margin-top: 10px; display: none; width:100%;}
+        
+        /* LOFI MIXER STYLES */
+        .lofi-mixer { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; margin-top: 15px; display: none; justify-content: space-around; flex-wrap: wrap;}
+        .lofi-control { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-main); font-size: 0.9em; width: 30%;}
+        .lofi-control input[type=range] { width: 100%; accent-color: var(--neon-blue); }
+
+        .badges-container { display: flex; gap: 10px; justify-content: center; margin-top: 10px; align-items: center; flex-wrap: wrap; }
+        .badge { background: var(--inner-bg); padding: 5px 10px; border-radius: 20px; font-size: 0.8em; color: var(--gold); border: 1px solid var(--gold); display: none; }
+        
+        .freeze-pill { position: absolute; top: 10px; right: 10px; background: #3b82f6; color: white; font-size: 0.7em; padding: 3px 8px; border-radius: 10px; font-weight: bold;}
+        .overdose-warning { color: var(--neon-red); font-size: 0.8em; margin-top: 5px; display: none;}
+        
+        .inventory-item { background: rgba(245, 158, 11, 0.15); border-left: 3px solid var(--neon-orange); }
+        .inventory-btn { background: var(--neon-orange); color: #000; border: none; padding: 5px 10px; border-radius: 3px; font-weight: bold; cursor: pointer; }
+
+        .boss-fight { background: linear-gradient(45deg, #7f1d1d, #000); border: 2px solid var(--neon-red); padding: 15px; text-align: center; border-radius: 8px; margin-top: 10px; display: none; animation: glow-red 1s infinite alternate;}
+        @keyframes glow-red { from { box-shadow: 0 0 5px rgba(239, 68, 68, 0.3); } to { box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); } }
+        .boss-btn { background: var(--neon-red); color: white; border: none; padding: 10px 20px; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; margin-top: 10px; border-radius: 5px; transition: 0.3s;}
+        .boss-btn:disabled { background: #555; color: #888; cursor: not-allowed; animation: none; box-shadow: none;}
+
+        .miniboss-fight { background: linear-gradient(45deg, #78350f, #000); border: 2px solid var(--neon-orange); padding: 15px; text-align: center; border-radius: 8px; margin-top: 10px; display: none; animation: glow-orange 1s infinite alternate;}
+        @keyframes glow-orange { from { box-shadow: 0 0 5px rgba(245, 158, 11, 0.3); } to { box-shadow: 0 0 20px rgba(245, 158, 11, 0.8); } }
+        .miniboss-btn { background: var(--neon-orange); color: black; border: none; padding: 10px 20px; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; margin-top: 10px; border-radius: 5px;}
+
+        .skill-trees { margin-top: 20px; padding: 15px; background: var(--inner-bg); border-radius: 8px; border: 1px solid var(--border-color); }
+        .skill-bar-container { background: var(--border-color); border-radius: 5px; height: 15px; width: 100%; margin: 5px 0 15px 0; overflow: hidden; position: relative;}
+        .skill-bar { height: 100%; width: 0%; transition: width 0.5s ease-in-out; }
+        .skill-academic { background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); }
+        .skill-creator { background: linear-gradient(90deg, var(--neon-pink), var(--neon-orange)); }
+        .skill-label { font-size: 0.9em; display: flex; justify-content: space-between; font-weight: bold; }
+
+        .creator-studio { border: 2px solid var(--neon-pink); background: linear-gradient(to bottom, rgba(236, 72, 153, 0.05), transparent); display: none; }
+
+        .heatmap-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+        .heat-box { width: 70px; height: 50px; background: var(--inner-bg); border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75em; border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; box-sizing: border-box; }
+        .heat-box:hover { transform: scale(1.1); z-index: 10; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .heat-box .heat-time { font-weight: bold; color: var(--text-main); text-shadow: 1px 1px 2px rgba(0,0,0,0.05); margin-bottom: 2px; }
+        .heat-box .heat-xp { font-weight: bold; color: var(--gold); text-shadow: 1px 1px 2px rgba(0,0,0,0.05); }
+        .heat-lvl-1 { background: rgba(5, 150, 105, 0.2); border-color: rgba(5, 150, 105, 0.3); }
+        .heat-lvl-2 { background: rgba(5, 150, 105, 0.5); border-color: rgba(5, 150, 105, 0.6); }
+        .heat-lvl-3 { background: rgba(5, 150, 105, 0.8); border-color: rgba(5, 150, 105, 0.9); }
+        .heat-lvl-4 { background: #059669; border-color: #047857; color: white !important; }
+        .heat-lvl-4 .heat-time { color: white; }
+
+        /* MODALS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; display: none; justify-content: center; align-items: center; flex-direction: column;}
+        .golden-ticket { background: linear-gradient(135deg, #b8860b, #ffd700, #daa520); padding: 30px; border-radius: 15px; text-align: center; color: #000; border: 4px dashed #fff; box-shadow: 0 0 50px rgba(255, 215, 0, 0.5); max-width: 400px; }
+        .ticket-title { font-family: 'Orbitron'; font-size: 2em; font-weight: bold; text-transform: uppercase; margin-bottom: 10px; border-bottom: 2px solid #000; padding-bottom: 10px;}
+        .close-modal { margin-top: 20px; background: #000; color: #fff; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+
+        .urge-container { text-align: center; color: white; display: flex; flex-direction: column; align-items: center;}
+        .breathing-circle { width: 150px; height: 150px; border-radius: 50%; background: radial-gradient(circle, var(--neon-blue), transparent); animation: breathe 8s infinite ease-in-out; margin: 30px 0; display: flex; align-items: center; justify-content: center; font-family: 'Orbitron'; font-size: 3em; font-weight: bold;}
+        @keyframes breathe { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.5); opacity: 1; } 100% { transform: scale(1); opacity: 0.5; } }
+
+        .gacha-suspense { font-family: 'Orbitron'; font-size: 2em; color: var(--gold); text-shadow: 0 0 20px var(--gold); animation: pulse-fast 0.5s infinite; }
+        @keyframes pulse-fast { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
+
+        .task-checkbox-container { display: flex; align-items: center; margin: 12px 0; background: rgba(16, 185, 129, 0.08); padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); cursor: pointer; transition: 0.2s; position: relative; }
+        .task-checkbox-container:hover { background: rgba(16, 185, 129, 0.15); transform: translateX(5px); }
+        .task-checkbox { margin-right: 15px; width: 22px; height: 22px; cursor: pointer; accent-color: var(--neon-green); }
+        .task-label { font-size: 1.15em; cursor: pointer; flex-grow: 1; font-weight: 600; transition: 0.3s; color: var(--text-main); }
+        .task-done { text-decoration: line-through; color: var(--neon-green) !important; opacity: 0.6; }
+        .task-badge { position: absolute; right: 15px; padding: 3px 8px; border-radius: 12px; font-size: 0.75em; font-weight: bold; font-family: 'Orbitron'; }
+        .badge-h { background: rgba(239, 68, 68, 0.2); color: var(--neon-red); border: 1px solid var(--neon-red); }
+        .badge-m { background: rgba(245, 158, 11, 0.2); color: var(--neon-orange); border: 1px solid var(--neon-orange); }
+        .badge-e { background: rgba(16, 185, 129, 0.2); color: var(--neon-green); border: 1px solid var(--neon-green); }
+
+        .syllabus-overview { background: var(--inner-bg); border: 2px solid var(--neon-blue); padding: 15px 20px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 0 15px rgba(14, 165, 233, 0.15); }
+        .syllabus-progress-container { background: var(--border-color); border-radius: 10px; height: 16px; width: 100%; margin-top: 8px; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.1); }
+        .syllabus-progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-blue), var(--neon-green), gold); transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+
+        .tycoon-stats { background: var(--inner-bg); padding: 10px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid var(--neon-pink); display:flex; justify-content: space-between; align-items:center; color: var(--text-main);}
+        .sub-count { font-family: 'Orbitron'; font-size: 1.5em; color: var(--neon-pink); font-weight: bold;}
+
+        .mystery-log { background: #110000; border: 1px solid var(--neon-red); padding: 15px; border-radius: 8px; margin-top: 15px; display: none; }
+        .mystery-title { color: var(--neon-red); font-weight: bold; border-bottom: 1px solid var(--neon-red); padding-bottom: 5px;}
+        .clue-item { background: rgba(255,0,0,0.1); padding: 8px; margin-top: 5px; border-radius: 4px; font-size: 0.9em; font-family: monospace; color: #fca5a5; }
+
+        .slot-machine { font-family: 'Orbitron'; font-size: 1.5em; background: #000; color: #fff; padding: 15px; border-radius: 8px; margin: 15px 0; border: 2px solid #fff; min-height: 40px; display: flex; align-items: center; justify-content: center;}
+
+        /* TROPHY ROOM STYLES */
+        .trophy-modal-content { background: var(--card-bg); border: 2px solid var(--gold); padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; text-align: center; color: var(--text-main); }
+        .trophy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px;}
+        .trophy-item { background: var(--inner-bg); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; transition: 0.3s; }
+        .trophy-item i { font-size: 2.5em; margin-bottom: 10px; color: #555; }
+        .trophy-item.unlocked i { color: var(--gold); text-shadow: 0 0 15px rgba(255,215,0,0.6); }
+        .trophy-item.unlocked { border-color: var(--gold); box-shadow: 0 0 10px rgba(255,215,0,0.2); }
+        .trophy-item span { font-weight: bold; font-size: 0.9em; }
+
+        /* BLACK MARKET STYLES */
+        #black-market { display: none; border: 2px solid #8b0000; box-shadow: 0 0 20px rgba(139, 0, 0, 0.4); animation: glitch 2s infinite; background: #050000;}
+        @keyframes glitch { 
+            0% { border-color: #8b0000; } 
+            50% { border-color: #ff0000; box-shadow: 0 0 30px rgba(255, 0, 0, 0.6); } 
+            100% { border-color: #8b0000; } 
+        }
+
+        @media (max-width: 768px) { .dashboard { grid-template-columns: 1fr; } .stats-container, .header, .flow-box, .vault-box { grid-column: span 1; } .stats-container { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="red-zone-alert" id="red-zone-ui"><i class="fas fa-skull"></i> RED ZONE ACTIVE: Complete daily tasks or face Vault Bleed! <i class="fas fa-skull"></i></div>
+
+<div class="notification" id="notif">Action Saved!</div>
+
+<div class="modal-overlay" id="ticket-modal">
+    <div class="golden-ticket" id="golden-ticket-box">
+        <div class="ticket-title"><i class="fas fa-star"></i> PREMIUM VOUCHER</div>
+        <h2 style="color: #000; border-bottom: none; justify-content: center; margin: 10px 0;"><i class="fas fa-hamburger"></i> CHEAT MEAL ROULETTE</h2>
+        <p style="font-weight: bold; font-size: 1.1em;">You earned it! Spin to find your 'Hole in the wall' spot in Mirpur/Cantonment.</p>
+        <div class="slot-machine" id="slot-result">READY TO SPIN</div>
+        <button class="close-modal" id="spin-btn" style="background:var(--neon-green); color:black;" onclick="spinRoulette()">SPIN NOW</button>
+        <button class="close-modal" id="claim-btn" style="display:none;" onclick="closeTicket()">CLAIM & CLOSE</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="urge-modal">
+    <div class="urge-container">
+        <h1 style="color: var(--neon-blue);"><i class="fas fa-brain"></i> URGE SURFING INITIATED</h1>
+        <p style="font-size: 1.2em; color: #ccc;">Do not switch tabs. Do not open your phone. Breathe.</p>
+        <div class="breathing-circle" id="urge-timer-text">60</div>
+        <button class="action-btn" style="background: var(--neon-red); color: white; margin-top: 20px; font-size: 1.2em;" onclick="failUrge()">I CAN'T RESIST (Fail)</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="gacha-overlay">
+    <div class="gacha-suspense"><i class="fas fa-spinner fa-spin"></i> DECRYPTING ALGORITHM...</div>
+</div>
+
+<div class="modal-overlay" id="interactive-boss-modal">
+    <div class="boss-fight" style="display:block; padding:30px; max-width: 500px; background: #000;">
+        <h2 style="color:var(--neon-red); border-bottom:none;"><i class="fas fa-radiation"></i> ACTIVE BOSS FIGHT!</h2>
+        <p id="boss-question-text" style="font-size: 1.2em; white-space: pre-wrap; font-family: monospace; color: #fca5a5;"></p>
+        <div style="font-family:'Orbitron'; color:var(--neon-orange); font-size: 2.5em; margin: 15px 0;" id="boss-fight-timer">02:00</div>
+        <input type="text" id="boss-answer-input" placeholder="Enter Answer (Number only)..." style="padding:15px; width:80%; font-size:1.2em; text-align:center; background:#222; color:white; border:2px solid var(--neon-red); border-radius:5px;">
+        <button class="boss-btn" onclick="submitBossAnswer()" style="width:100%; margin-top:15px; font-size:1.2em;">STRIKE BOSS</button>
+        <p style="color:var(--text-muted); font-size:0.8em; margin-top:10px;">Warning: Wrong answer or timeout deals 40% HP Damage!</p>
+    </div>
+</div>
+
+<div class="modal-overlay" id="trophy-modal-overlay">
+    <div class="trophy-modal-content">
+        <h2 style="color: var(--gold); border-bottom: none; justify-content: center; margin-top:0;"><i class="fas fa-trophy"></i> Achievement Gallery</h2>
+        <p style="color: var(--text-muted); font-size: 0.9em;">Unlock hidden achievements by mastering the system.</p>
+        <div class="trophy-grid" id="trophy-grid-ui">
+            </div>
+        <button class="close-modal" style="background:var(--neon-purple); color:white; width: 100%; margin-top: 30px;" onclick="document.getElementById('trophy-modal-overlay').style.display='none'">CLOSE GALLERY</button>
+    </div>
+</div>
+
+<div class="dashboard" id="main-dashboard">
+    <div class="header">
+        <div class="theme-selector" id="theme-selector-ui">
+            <button class="theme-btn" onclick="setTheme('default')">Default</button>
+            <button class="theme-btn" id="btn-theme-crime" style="display:none;" onclick="setTheme('true-crime')">True Crime</button>
+            <button class="theme-btn" id="btn-theme-emo" style="display:none;" onclick="setTheme('midwest-emo')">Midwest Emo</button>
+        </div>
+
+        <div class="mode-toggle-container">
+            <button class="mode-btn" id="mode-toggle-btn" onclick="toggleLightMode()">
+                <i class="fas fa-sun"></i> Light Mode
+            </button>
+        </div>
+        
+        <div class="sprint-banner" id="sprint-banner-ui">🔥 DAY 1 OF 33: THE MOMENTUM PHASE | SPRINT MULTIPLIER: 1.0X 🔥</div>
+        
+        <h1>Tuition Lord Basecamp</h1>
+        <p style="color: var(--neon-blue); letter-spacing: 1px;">The Ultimate Social Dopamine Engine (May 16 - Jun 25)</p>
+        <div class="badges-container" id="badges-div">
+            <div class="badge" id="badge-streak"><i class="fas fa-fire"></i> Iron Lungs</div>
+            <div class="badge" id="badge-gambler"><i class="fas fa-dice"></i> Gambler</div>
+            <div class="badge" id="badge-boss"><i class="fas fa-skull"></i> Boss Slayer</div>
+            <div class="badge" id="badge-time" style="display:inline-block; border-color:var(--neon-green); color:var(--neon-green); font-weight:bold; font-size: 0.9em;"><i class="fas fa-clock"></i> Today: 0h 0m</div>
+        </div>
+        <div class="tools-bar">
+            <button class="tool-btn" id="btn-anti-distract" onclick="toggleAntiDistraction()" style="border-color: var(--neon-red); color: var(--neon-red);"><i class="fas fa-shield-alt"></i> Link Blocker Extension</button>
+            <button class="tool-btn" onclick="simulateDistraction()" style="border-color: gray; color: gray; display: none;" id="btn-sim-distract">[Simulate Distraction]</button>
+            
+            <button class="tool-btn" onclick="document.getElementById('trophy-modal-overlay').style.display='flex'" style="border-color: var(--gold); color: var(--gold);"><i class="fas fa-trophy"></i> Trophy Room</button>
+            
+            <button class="tool-btn" id="btn-save-cloud" onclick="saveToCloud()" style="border-color: var(--neon-green); color: var(--neon-green);"><i class="fas fa-cloud-upload-alt"></i> Save to Cloud</button>
+            <button class="tool-btn" id="btn-load-cloud" onclick="loadFromCloud()" style="border-color: var(--neon-blue); color: var(--neon-blue);"><i class="fas fa-cloud-download-alt"></i> Load from Cloud</button>
+            <button class="tool-btn" onclick="buyFreeze()" style="border-color: #3b82f6; color: #3b82f6;"><i class="fas fa-snowflake"></i> Buy Freeze (300 XP)</button>
+            <button class="tool-btn" onclick="exportData()"><i class="fas fa-download"></i> Manual Backup</button>
+            <button class="tool-btn" onclick="importData()"><i class="fas fa-upload"></i> Restore Backup</button>
+        </div>
+    </div>
+
+    <div class="vault-box">
+        <div style="font-weight: bold; color: var(--text-muted); margin-bottom: 5px;"><i class="fas fa-lock"></i> 41-DAY ESCROW VAULT</div>
+        <div class="vault-value" id="vault-display">10,000</div>
+        <div style="font-size: 0.8em; color: #888;">Unlocks on June 25th after defeating Mock Test Boss</div>
+        <div class="vault-bleed" id="vault-bleed-anim">-500 XP BLEED!</div>
+        <button id="claim-vault-btn" class="action-btn" style="background: gold; color: black; display: none; margin-top: 10px; width: 100%;" onclick="claimVault()">CLAIM ESCROW VAULT</button>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box" style="color: var(--neon-red); border-bottom: 3px solid var(--neon-red);">
+            <i class="fas fa-heart"></i>
+            <div class="stat-value" id="hp-display">100</div>
+            <div>Survival HP</div>
+            <div class="hp-bar-container"><div id="hp-bar" class="hp-bar"></div></div>
+        </div>
+        <div class="stat-box" style="color: var(--neon-green); border-bottom: 3px solid var(--neon-green);">
+            <i class="fas fa-bolt"></i>
+            <div class="stat-value" id="xp-display">0</div>
+            <div>Dopamine XP</div>
+        </div>
+        <div class="stat-box" style="color: var(--neon-blue); border-bottom: 3px solid var(--neon-blue);">
+            <i class="fas fa-crown"></i>
+            <div class="stat-value" id="level-display">1</div>
+            <div id="rank-name" style="font-weight:bold; letter-spacing: 1px;">Bronze III</div>
+        </div>
+        <div class="stat-box" style="color: var(--neon-orange); border-bottom: 3px solid var(--neon-orange);">
+            <div id="freeze-indicator" class="freeze-pill" style="display:none;">❄️ Freeze: 1</div>
+            <i class="fas fa-fire"></i>
+            <div class="stat-value" id="streak-display">0</div>
+            <div id="multiplier-display">1.0x Multiplier</div>
+            <div id="overdose-warning" class="overdose-warning">⚠️ Dopamine Overdose! Penalty applied.</div>
+            <div id="relapse-warning" class="overdose-warning" style="color: #fca5a5;">⚠️ RELAPSE PENALTY: XP Gained is Halved (24h)!</div>
+        </div>
+    </div>
+
+    <div class="flow-box" id="flow-box">
+        <div style="font-weight: bold; color: var(--neon-blue); font-size: 1.2em;"><i class="fas fa-brain"></i> FLOW STATE METER</div>
+        <div style="font-size: 0.9em; color: var(--text-muted); margin-top: 5px;" id="flow-status">Complete tasks & focus sessions to build momentum!</div>
+        <div class="flow-bar-container"><div class="flow-bar-fill" id="flow-bar-fill"></div></div>
+    </div>
+
+    <div class="card">
+        <div class="pomodoro-container" id="pomodoro-box">
+            <div style="color: var(--neon-blue); font-weight: bold;"><i class="fas fa-stopwatch"></i> Focus Protocol (25m)</div>
+            <p style="font-size:0.8em; color:var(--neon-green); margin:5px 0;">[Drops Unpredictable Loot on Completion!]</p>
+            <div class="timer-display" id="timer-text">25:00</div>
+            <div>
+                <button class="timer-btn" onclick="startTimer()">Start</button>
+                <button class="timer-btn stop" onclick="resetTimer()">Reset</button>
+            </div>
+            
+            <button class="timer-btn panic" onclick="startUrgeSurfing()"><i class="fas fa-exclamation-triangle"></i> URGE PANIC BUTTON</button>
+
+            <select class="music-select" id="music-selector" onchange="changeMusic()">
+                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3">Midwest Emo Focus Track</option>
+                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3">Hindi Synthwave Beats</option>
+                <option value="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3">Deep Work Binaural Beats</option>
+            </select>
+
+            <div class="lofi-mixer" id="lofi-mixer-ui">
+                <div style="width:100%; color:var(--neon-blue); font-size: 0.85em; font-weight:bold; margin-bottom:5px; text-transform:uppercase;"><i class="fas fa-sliders-h"></i> Ambient Lofi Mixer</div>
+                <div class="lofi-control">
+                    <i class="fas fa-cloud-rain"></i> Rain
+                    <input type="range" id="vol-rain" min="0" max="1" step="0.1" value="0" oninput="updateMixerVol('rain', this.value)">
+                </div>
+                <div class="lofi-control">
+                    <i class="fas fa-coffee"></i> Cafe
+                    <input type="range" id="vol-cafe" min="0" max="1" step="0.1" value="0" oninput="updateMixerVol('cafe', this.value)">
+                </div>
+                <div class="lofi-control">
+                    <i class="fas fa-fire"></i> Fire
+                    <input type="range" id="vol-fire" min="0" max="1" step="0.1" value="0" oninput="updateMixerVol('fire', this.value)">
+                </div>
+                <audio id="audio-rain" loop src="https://actions.google.com/sounds/v1/water/rain_on_roof.ogg"></audio>
+                <audio id="audio-cafe" loop src="https://actions.google.com/sounds/v1/crowds/restaurant_chatter.ogg"></audio>
+                <audio id="audio-fire" loop src="https://actions.google.com/sounds/v1/foley/fire_burning.ogg"></audio>
+            </div>
+
+            <div id="music-indicator" style="display:none; margin-top: 15px;">
+                <p style="color: var(--neon-purple); font-size: 0.9em; margin: 0 0 5px 0; animation: glow 2s infinite alternate;">
+                    <i class="fas fa-headphones-alt"></i> <strong id="music-status-text">Playing Custom Audio & Ambience</strong>
+                </p>
+                <audio id="focus-audio" class="audio-player" controls loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+            </div>
+        </div>
+
+        <h2><i class="fas fa-crosshairs"></i> The Master Timeline</h2>
+        
+        <div class="syllabus-overview">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:var(--text-main); font-size:1.1em; font-weight:bold;"><i class="fas fa-tasks" style="color:var(--neon-blue);"></i> Overall Syllabus Completed</span>
+                <span id="syllabus-percent" style="color:var(--neon-green); font-family: 'Orbitron'; font-size:1.5em; font-weight:bold; text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);">0%</span>
+            </div>
+            <div class="syllabus-progress-container">
+                <div class="syllabus-progress-bar" id="syllabus-bar"></div>
+            </div>
+        </div>
+
+        <select class="mission-selector" id="day-selector" onchange="loadMission()">
+            <optgroup label="ফেজ ১: এইচএসসি ম্যাথ ও ফিজিক্স ১ম পত্র">
+                <option value="May 16">১৬ মে: ম্যাথ ১ম (অন্টারীকরণ h + ম্যাট্রিক্স e)</option>
+                <option value="May 17">১৭ মে: ম্যাথ ১ম (যোগজীকরণ h + বৃত্ত e)</option>
+                <option value="May 18">১৮ মে: ম্যাথ ১ম (বিন্যাস ও সমাবেশ h + ত্রিকোণমিতি e)</option>
+                <option value="May 19">১৯ মে: ম্যাথ ১ম (ফাংশন h + সরলরেখা m)</option>
+                <option value="May 20">২০ মে: ম্যাথ ২য় (বাস্তব সংখ্যা ও অসমতা h + জটিল সংখ্যা m)</option>
+                <option value="May 21">২১ মে: ম্যাথ ২য় (যোগাশ্রয়ী প্রোগ্রামিং h + বহুপদী m)</option>
+                <option value="May 22">২২ মে: ম্যাথ ২য় (দ্বিপদী বিস্তৃতি h + কণিক m)</option>
+                <option value="May 23">২৩ মে: ম্যাথ ২য় (সম্ভাবনা h + স্থিতিবিদ্যা/গতিবিদ্যা m)</option>
+                <option value="May 24">২৪ মে: ফিজিক্স ১ম (গতিবিদ্যা h + ভেক্টর e)</option>
+                <option value="May 25">২৫ মে: ফিজিক্স ১ম (পদার্থ গাঠনিক ধর্ম h + মহাকর্ষ m)</option>
+                <option value="May 26">২৬ মে: ফিজিক্স ১ম (তরঙ্গ h + পর্যাবৃত্ত গতি m)</option>
+                <option value="May 27">২৭ মে: ফিজিক্স ১ম (নিউটনিয়ান বলবিদ্যা m + আদর্শ গ্যাস m)</option>
+                <option value="May 28">২৮ মে: ফিজিক্স ১ম (কাজ, শক্তি ও ক্ষমতা h) + ২য় (পরমাণুর মডেল e)</option>
+            </optgroup>
+            <optgroup label="ফেজ ২: ফিজিক্স ২য় ও এসএসসি কেমিস্ট্রি">
+                <option value="May 29">২৯ মে: ফিজিক্স ২য় (স্থির তড়িৎ h + তাপগতিবিদ্যা m)</option>
+                <option value="May 30">৩০ মে: ফিজিক্স ২য় (তড়িৎ প্রবাহের চৌম্বক ক্রিয়া h + চল তড়িৎ m)</option>
+                <option value="May 31">৩১ মে: ফিজিক্স ২য় (তাড়িতচৌম্বক আবেশ h + ভৌত আলোকবিজ্ঞান m)</option>
+                <option value="Jun 1">১ জুন: ফিজিক্স ২য় (জ্যামিতিক আলোকবিজ্ঞান h + আধুনিক পদার্থবিজ্ঞান m)</option>
+                <option value="Jun 2">২ জুন: ফিজিক্স ২য় (জ্যোতির্বিজ্ঞান h + সেমিকন্ডাক্টর m)</option>
+                <option value="Jun 3">৩ জুন: এসএসসি কেমিস্ট্রি (মোলের ধারণা h + পদার্থের গঠন e)</option>
+                <option value="Jun 4">৪ জুন: এসএসসি কেমিস্ট্রি (রসায়ন ও শক্তি h + পর্যায় সারণি e)</option>
+                <option value="Jun 5">৫ জুন: এসএসসি কেমিস্ট্রি (এসিড-ক্ষারক সমতা m + খনিজ/ধাতু m + জীবাশ্ম e)</option>
+                <option value="Jun 6">৬ জুন: এসএসসি কেমিস্ট্রি (রাসায়নিক বিক্রিয়া h + রাসায়নিক বন্ধন m)</option>
+            </optgroup>
+            <optgroup label="ফেজ ৩: এসএসসি ফিজিক্স ও ম্যাথ বেসিকস">
+                <option value="Jun 7">৭ জুন: এসএসসি ফিজিক্স (চাপ m + তাপ m + আলোর প্রতিফলন/প্রতিসরণ e/m)</option>
+                <option value="Jun 8">৮ জুন: এসএসসি ফিজিক্স (স্থির/চল তড়িৎ m + বিদ্যুতের চৌম্বক ক্রিয়া m)</option>
+                <option value="Jun 9">৯ জুন: এসএসসি ফিজিক্স (গতি m + বল h)</option>
+                <option value="Jun 10">১০ জুন: এসএসসি ফিজিক্স (কাজ, ক্ষমতা ও শক্তি m + শব্দের কথা e)</option>
+                <option value="Jun 11">১১ জুন: এসএসসি ম্যাথ (দুই চলকবিশিষ্ট সমীকরণ h + জ্যামিতি m)</option>
+                <option value="Jun 12">১২ জুন: এসএসসি ম্যাথ (বীজগণিতীয় রাশি m + সসীম ধারা e)</option>
+                <option value="Jun 13">১৩ জুন: এসএসসি ম্যাথ (সেট ও ফাংশন m + সূচক ও লগারিদম m)</option>
+                <option value="Jun 14">১৪ জুন: এসএসসি উচ্চতর ম্যাথ (ত্রিকোণমিতি, ধারা ও বীজগণিত m)</option>
+                <option value="Jun 15">১৫ জুন: এসএসসি উচ্চতর ম্যাথ (স্থানাঙ্ক জ্যামিতি ও সমতলীয় ভেক্টর m)</option>
+                <option value="Jun 16">১৬ জুন: এসএসসি উচ্চতর ম্যাথ (সম্ভাবনা m + জ্যামিতি m)</option>
+                <option value="Jun 17">১৭ জুন: এসএসসি ম্যাথ/উচ্চতর (পরিমিতি ও পরিসংখ্যান m)</option>
+                <option value="Jun 18">১৮ জুন: এসএসসি উচ্চতর ম্যাথ (দ্বিপদী বিস্তৃতি m + সূচকীয়/লগারিদমিক ফাংশন m)</option>
+                <option value="Jun 19">১৯ জুন: এসএসসি উচ্চতর/সাধারণ (ঘন জ্যামিতি m + সাধারণ ত্রিকোণমিতি e)</option>
+            </optgroup>
+            <optgroup label="ফেজ ৪: কন্টেন্ট ব্লিটজ ও ব্র্যান্ডিং">
+                <option value="Jun 20">২০ জুন: ৫টি কঠিন টপিক বাছাই ও স্ক্রিপ্ট লেখা</option>
+                <option value="Jun 21">২১ জুন: অন্তরীকরণ ও মেকানিক্স ফুল-লেংথ ভিডিও শুট</option>
+                <option value="Jun 22">২২ জুন: কেমিস্ট্রি 'মোল' ও তড়িৎচুম্বকত্ব ভিডিও রেকর্ড</option>
+                <option value="Jun 23">২৩ জুন: HP EliteBook দিয়ে ভিডিও এডিটিং</option>
+                <option value="Jun 24">২৪ জুন: ইউটিউবে আপলোড ও ফেসবুকে শেয়ার</option>
+                <option value="Jun 25">২৫ জুন: সব ফর্মুলা শিট রিভাইজ (Final Boss)</option>
+            </optgroup>
+        </select>
+        
+        <div class="mission-desc" id="mission-text">Select your daily protocol.</div>
+        
+        <div id="miniboss-ui" class="miniboss-fight">
+            <h3 style="margin:0; color:var(--neon-orange);" id="miniboss-title"><i class="fas fa-ghost"></i> MINI-BOSS</h3>
+            <p style="font-size: 0.9em; color: #fcd34d;" id="miniboss-desc">Defeat the phase boss to proceed. Requires 300 XP and 7-Day Streak.</p>
+            <button class="miniboss-btn" onclick="attemptInteractiveMiniBoss()">Fight Mini-Boss (-300 XP)</button>
+        </div>
+
+        <div id="boss-fight-ui" class="boss-fight">
+            <h3 style="margin:0; color:var(--neon-red);"><i class="fas fa-skull"></i> FINAL BOSS: THE MOCK TEST (HSC/SSC Master Edition)</h3>
+            <p style="font-size: 0.9em; color: #fca5a5;">The ultimate test covering HSC Math, Physics & Chemistry. Requires 1000 XP & Level 10 Academic Skill.</p>
+            <button class="boss-btn" id="final-boss-btn" onclick="attemptInteractiveBoss()">Fight Boss (-1000 XP)</button>
+        </div>
+
+        <div class="mystery-log" id="mystery-log-ui">
+            <div class="mystery-title"><i class="fas fa-user-secret"></i> True Crime Mystery Log: "The Missing Variables"</div>
+            <p style="font-size: 0.8em; color: var(--text-muted); margin: 5px 0;">Find clues by completing daily tasks and quests.</p>
+            <div id="clues-container"></div>
+            <button id="solve-mystery-btn" class="action-btn" style="margin-top:10px; display:none; background:var(--neon-red); color:white; width:100%;" onclick="solveMystery()">SOLVE MYSTERY (+1000 XP)</button>
+        </div>
+
+        <div class="skill-trees">
+            <h3 style="margin-top:0; color: var(--text-main); font-size: 1.1em;"><i class="fas fa-sitemap"></i> Skill Trees</h3>
+            
+            <div class="skill-label"><span><i class="fas fa-graduation-cap" style="color:var(--neon-blue);"></i> Academic Mastery</span> <span id="acad-lvl">Lvl 1</span></div>
+            <div class="skill-bar-container"><div class="skill-bar skill-academic" id="bar-academic"></div></div>
+            
+            <div class="skill-label"><span><i class="fas fa-video" style="color:var(--neon-pink);"></i> Creator Hustle</span> <span id="creat-lvl">Lvl 1</span></div>
+            <div class="skill-bar-container"><div class="skill-bar skill-creator" id="bar-creator"></div></div>
+        </div>
+
+        <h3 style="color: var(--neon-purple); margin-top:20px;">XP Hacks (Psychology Based)</h3>
+        <div class="scrollable-list">
+            <ul class="action-list">
+                <li class="action-item" onclick="addStudyTime(30); addXP(20, '30 Mins Deep Study!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-hourglass-half" style="color:var(--neon-green); margin-right:10px;"></i>
+                    <div><strong>Deep Work: 30 Mins</strong><br><small>টানা আধা ঘণ্টা মনোযোগ দিয়ে পড়া</small></div></div>
+                    <button class="action-btn">+20 XP</button>
+                </li>
+                <li class="action-item" onclick="addStudyTime(60); addXP(45, '1 Hour Deep Study!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-hourglass" style="color:var(--neon-blue); margin-right:10px;"></i>
+                    <div><strong>Deep Work: 1 Hour</strong><br><small>টানা ১ ঘণ্টা মনোযোগ দিয়ে পড়া</small></div></div>
+                    <button class="action-btn">+45 XP</button>
+                </li>
+                <li class="action-item" onclick="addStudyTime(90); addXP(75, '1.5 Hours Deep Study!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-hourglass-end" style="color:var(--neon-purple); margin-right:10px;"></i>
+                    <div><strong>Deep Work: 1.5 Hours</strong><br><small>টানা ১.৫ ঘণ্টা মনোযোগ দিয়ে পড়া</small></div></div>
+                    <button class="action-btn">+75 XP</button>
+                </li>
+                <li class="action-item" onclick="addStudyTime(120); addXP(110, '2 Hours Deep Study!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-gem" style="color:var(--neon-orange); margin-right:10px;"></i>
+                    <div><strong>Deep Work: 2 Hours</strong><br><small>টানা ২ ঘণ্টা ফোকাস ধরে রাখা</small></div></div>
+                    <button class="action-btn">+110 XP</button>
+                </li>
+                <li class="action-item" onclick="addStudyTime(150); addXP(150, '2.5 Hours Deep Study!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-crown" style="color:var(--neon-pink); margin-right:10px;"></i>
+                    <div><strong>Deep Work: 2.5 Hours</strong><br><small>টানা ২.৫ ঘণ্টা ফোকাস ধরে রাখা</small></div></div>
+                    <button class="action-btn">+150 XP</button>
+                </li>
+                <li class="action-item" onclick="addStudyTime(180); addXP(200, '3 Hours Deep Study!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-dragon" style="color:var(--gold); margin-right:10px;"></i>
+                    <div><strong>Deep Work: 3 Hours</strong><br><small>টানা ৩ ঘণ্টা গড লেভেল ফোকাস</small></div></div>
+                    <button class="action-btn" style="background:var(--gold); color:black;">+200 XP</button>
+                </li>
+                <li class="action-item" onclick="addStudyTime(90); addXP(50, 'Flow State Achieved!', 'general')">
+                    <div class="flex-center"><i class="fas fa-brain" style="color:var(--neon-pink); margin-right:10px;"></i>
+                    <div><strong>The Flow State (90m)</strong><br><small>টানা ৯০ মিনিট 'ডিপ ওয়ার্ক' (ফোন ছাড়া)</small></div></div>
+                    <button class="action-btn">+50 XP</button>
+                </li>
+                <li class="action-item" onclick="addStudyTime(120); addXP(80, 'Monk Mode Activated!', 'general')">
+                    <div class="flex-center"><i class="fas fa-user-ninja" style="color:var(--neon-orange); margin-right:10px;"></i>
+                    <div><strong>Deep Monk Mode (2h)</strong><br><small>ফোন অন্য রুমে রেখে বা সম্পূর্ণ সুইচ অফ করে টানা ২ ঘণ্টা পড়া</small></div></div>
+                    <button class="action-btn">+80 XP</button>
+                </li>
+                <li class="action-item" onclick="addStudyTime(60); addXP(35, 'Sandbox Mode On!', 'creator')">
+                    <div class="flex-center"><i class="fas fa-laptop-code" style="color:var(--neon-blue); margin-right:10px;"></i>
+                    <div><strong>Deep Work Sandbox (1h)</strong><br><small>ল্যাপটপে শুধু কাজের ১টি ট্যাব ওপেন রাখা (১ ঘণ্টা)</small></div></div>
+                    <button class="action-btn">+35 XP</button>
+                </li>
+
+                <li class="action-item" onclick="addXP(80, 'Past Paper Solved!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-file-alt" style="color:var(--neon-green); margin-right:10px;"></i>
+                    <div><strong>Past Paper Solved</strong><br><small>HSC/SSC এর ১টি পূর্ণাঙ্গ বোর্ড প্রশ্ন সমাধান করা</small></div></div>
+                    <button class="action-btn">+80 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(45, 'Ed-Tech Brainstorming!', 'creator')">
+                    <div class="flex-center"><i class="fas fa-network-wired" style="color:var(--neon-pink); margin-right:10px;"></i>
+                    <div><strong>Ed-Tech Architecture</strong><br><small>প্ল্যাটফর্মের পেমেন্ট গেটওয়ে বা ল্যান্ডিং পেজ ডিজাইন নিয়ে ভাবা</small></div></div>
+                    <button class="action-btn">+45 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(30, 'Formula Sheet Mastery!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-scroll" style="color:var(--neon-blue); margin-right:10px;"></i>
+                    <div><strong>Formula Matrix</strong><br><small>সব সূত্র একবার রিভাইজ দেওয়া</small></div></div>
+                    <button class="action-btn">+30 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(70, 'Frog Eaten!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-frog" style="color:var(--neon-green); margin-right:10px;"></i>
+                    <div><strong>Eat The Frog</strong><br><small>দিনের সবচেয়ে কঠিন বা অপছন্দের টপিকটা সকালে প্রথমেই শেষ করা</small></div></div>
+                    <button class="action-btn">+70 XP</button>
+                </li>
+                <li class="action-item" onclick="recoverHP(20, 'HP Recovered: Sleep/Rest')">
+                    <div class="flex-center"><i class="fas fa-bed" style="color:var(--neon-green); margin-right:10px;"></i>
+                    <div><strong>Recovery Protocol</strong><br><small>পর্যাপ্ত ঘুম বা রেস্ট নিয়ে ব্রেন রিকভার করা</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-red); color:white;">+20 HP</button>
+                </li>
+                <li class="action-item" onclick="addXP(45, 'Active Recall Mastery!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-memory" style="color:var(--neon-blue); margin-right:10px;"></i>
+                    <div><strong>Active Recall Flash</strong><br><small>বই পুরোপুরি বন্ধ করে কোনো টপিকের মাইন্ড-ম্যাপ খাতায় না দেখে আঁকা</small></div></div>
+                    <button class="action-btn">+45 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(35, 'Content Creator Level Up!', 'creator')">
+                    <div class="flex-center"><i class="fas fa-video" style="color:var(--neon-pink); margin-right:10px;"></i>
+                    <div><strong>Edu-Creator Hustle</strong><br><small>ইউটিউব বা এড-টেক প্ল্যাটফর্মের জন্য একটা ভিডিওর স্ক্রিপ্ট বা হুক রেডি করা</small></div></div>
+                    <button class="action-btn">+35 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(60, 'Eureka Protocol!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-lightbulb" style="#fcd34d; margin-right:10px;"></i>
+                    <div><strong>The Eureka Moment</strong><br><small>২০ মিনিটের বেশি আটকে থাকা ম্যাথ মিলানো</small></div></div>
+                    <button class="action-btn">+60 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(40, 'Protege Effect Activated!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-chalkboard-teacher" style="color:var(--neon-blue); margin-right:10px;"></i>
+                    <div><strong>The Protege Effect</strong><br><small>আয়নার সামনে ৫ মিনিট না দেখে বোঝানো</small></div></div>
+                    <button class="action-btn">+40 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(30, 'Zeigarnik Loop Closed!', 'general')">
+                    <div class="flex-center"><i class="fas fa-check-double" style="color:var(--neon-green); margin-right:10px;"></i>
+                    <div><strong>Zeigarnik Closure</strong><br><small>গতকালের অসম্পূর্ণ কোনো পড়া আজ শেষ করা</small></div></div>
+                    <button class="action-btn">+30 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(25, 'Interleaving Success!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-random" style="color:var(--neon-orange); margin-right:10px;"></i>
+                    <div><strong>Interleaving Switch</strong><br><small>বোরিং লাগলে সাবজেক্ট চেঞ্জ করে পড়া কন্টিনিউ করা</small></div></div>
+                    <button class="action-btn">+25 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(40, 'Online Class Done!', 'academic')">
+                    <div class="flex-center"><i class="fas fa-laptop-house" style="color:var(--neon-blue); margin-right:10px;"></i>
+                    <div><strong>Virtual Classroom</strong><br><small>ফোকাসড হয়ে একটি অনলাইন ক্লাস বা লেকচার দেখা</small></div></div>
+                    <button class="action-btn">+40 XP</button>
+                </li>
+                <li class="action-item" onclick="addXP(30, 'Storybook Escapism!', 'general')">
+                    <div class="flex-center"><i class="fas fa-book-open" style="color:var(--neon-purple); margin-right:10px;"></i>
+                    <div><strong>Bookworm Mode</strong><br><small>স্ক্রিন টাইম কমিয়ে ৩০ মিনিট গল্পের বই পড়া</small></div></div>
+                    <button class="action-btn">+30 XP</button>
+                </li>
+            </ul>
+        </div>
+
+        <h3 style="color: var(--neon-green); margin-top:20px;"><i class="fas fa-heartbeat"></i> Bio-Hacks (HP Recovery)</h3>
+        <div class="scrollable-list" style="max-height: 200px;">
+            <ul class="action-list">
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(40, 'Post-2.5h Study Rejuvenation')">
+                    <div class="flex-center"><i class="fas fa-battery-full" style="color:var(--neon-pink); margin-right:10px;"></i>
+                    <div><strong>Deep Rest (After 2.5h)</strong><br><small>২.৫ ঘণ্টা পড়ার পর বড় ব্রেক ও রিকভারি</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+40 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(50, 'Post-3h God-Mode Rest')">
+                    <div class="flex-center"><i class="fas fa-bed" style="color:var(--gold); margin-right:10px;"></i>
+                    <div><strong>God-Mode Rest (After 3h)</strong><br><small>৩ ঘণ্টা পড়ার পর ব্রেনকে সম্পূর্ণ বিশ্রাম দেওয়া</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+50 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(30, 'Cold Shower Reset')">
+                    <div class="flex-center"><i class="fas fa-shower" style="color:#0ea5e9; margin-right:10px;"></i>
+                    <div><strong>Cold Shower Reset</strong><br><small>ক্লান্তি দূর করতে ঠান্ডা পানিতে গোসল</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+30 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(10, 'Eye Strain Relief')">
+                    <div class="flex-center"><i class="fas fa-eye" style="color:var(--neon-orange); margin-right:10px;"></i>
+                    <div><strong>20-20-20 Rule</strong><br><small>২০ ফুট দূরে ২০ সেকেন্ড তাকিয়ে চোখের বিশ্রাম</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+10 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(5, 'Hydration Check!')">
+                    <div class="flex-center"><i class="fas fa-tint" style="color:#0ea5e9; margin-right:10px;"></i>
+                    <div><strong>Hydration Protocol</strong><br><small>১ গ্লাস পানি পান করা</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+5 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(15, 'Sunlight & Fresh Air')">
+                    <div class="flex-center"><i class="fas fa-sun" style="color:#fcd34d; margin-right:10px;"></i>
+                    <div><strong>Solar Recharge</strong><br><small>ছাদে বা বাইরে গিয়ে ১০ মিনিট হাঁটা (ফোন ছাড়া)</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+15 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(20, 'Physical Reset')">
+                    <div class="flex-center"><i class="fas fa-dumbbell" style="color:var(--text-main); margin-right:10px;"></i>
+                    <div><strong>Physical Reset</strong><br><small>১৫ মিনিট ফ্রি-হ্যান্ড এক্সারসাইজ বা স্ট্রেচিং</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+20 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(25, 'Digital Detox')">
+                    <div class="flex-center"><i class="fas fa-tree" style="color:#10b981; margin-right:10px;"></i>
+                    <div><strong>Digital Detox</strong><br><small>টানা ৩০ মিনিট সব ধরনের স্ক্রিন থেকে দূরে থাকা</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+25 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(16, 185, 129, 0.3);" onclick="recoverHP(15, 'Mindfulness & Breathing')">
+                    <div class="flex-center"><i class="fas fa-spa" style="color:var(--neon-purple); margin-right:10px;"></i>
+                    <div><strong>Zen Breathing</strong><br><small>১০ মিনিট চোখ বন্ধ করে ডিপ ব্রিদিং বা মেডিটেশন</small></div></div>
+                    <button class="action-btn" style="background:var(--neon-green); color:white;">+15 HP</button>
+                </li>
+            </ul>
+        </div>
+
+        <button style="width:100%; padding:12px; margin-top:15px; background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 5px; cursor:pointer; font-weight:bold; letter-spacing:1px;" onclick="breakStreak()">I BROKE MY ROUTINE (Vault Bleed / -30 XP / -10 HP)</button>
+        <button style="width:100%; padding:12px; margin-top:10px; background: #7f1d1d; border: 1px solid red; color: white; border-radius: 5px; cursor:pointer; font-weight:bold; letter-spacing:1px;" onclick="triggerRelapse()"><i class="fas fa-skull-crossbones"></i> I RELAPSED (Massive Vault Bleed! -200 XP, -40 HP & 24h Penalty)</button>
+
+        <div style="margin-top: 20px; padding: 15px; border: 1px dashed var(--neon-red); border-radius: 8px; background: rgba(239, 68, 68, 0.05);">
+            <h3 style="color: var(--neon-red); margin-top: 0; font-size: 1.1em;"><i class="fas fa-minus-circle"></i> Penalty Zone (Manual Deductions)</h3>
+            <p style="color: var(--text-muted); font-size: 0.85em; margin-bottom: 10px;">ফাঁকিবাজি বা রুটিন মিস করলে ম্যানুয়ালি XP ও HP মাইনাস করুন।</p>
+            <ul class="action-list">
+                <li class="action-item" style="border-color: rgba(239, 68, 68, 0.3);" onclick="applyPenalty(40, 10, 'YouTube Shorts Rabbit Hole')">
+                    <div class="flex-center"><i class="fab fa-youtube" style="color:var(--neon-red); margin-right:10px;"></i>
+                    <div><strong>Shorts Rabbit Hole</strong><br><small>১টা ভিডিও দেখতে গিয়ে ৩০ মিনিট নষ্ট</small></div></div>
+                    <button class="action-btn" style="background: var(--neon-red); color: white;">-40 XP, -10 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(239, 68, 68, 0.3);" onclick="applyPenalty(15, 20, 'Junk Food Coma')">
+                    <div class="flex-center"><i class="fas fa-hamburger" style="color:var(--neon-red); margin-right:10px;"></i>
+                    <div><strong>Junk Food Coma</strong><br><small>অদ্বিরিক্ত ফাস্ট ফুড খেয়ে ব্রেন ফগ হওয়া</small></div></div>
+                    <button class="action-btn" style="background: var(--neon-red); color: white;">-15 XP, -20 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(239, 68, 68, 0.3);" onclick="applyPenalty(20, 5, 'Distraction / Time Wasted')">
+                    <div class="flex-center"><i class="fas fa-mobile-alt" style="color:var(--neon-red); margin-right:10px;"></i>
+                    <div><strong>Minor Distraction</strong><br><small>অকারণে ফোন স্ক্রল বা সময় নষ্ট</small></div></div>
+                    <button class="action-btn" style="background: var(--neon-red); color: white;">-20 XP, -5 HP</button>
+                </li>
+                <li class="action-item" style="border-color: rgba(239, 68, 68, 0.3);" onclick="applyPenalty(50, 15, 'Missed Study Session')">
+                    <div class="flex-center"><i class="fas fa-bed" style="color:var(--neon-red); margin-right:10px;"></i>
+                    <div><strong>Slacking Off</strong><br><small>পড়ার সময়ে ঘুম বা অন্য কাজ করা</small></div></div>
+                    <button class="action-btn" style="background: var(--neon-red); color: white;">-50 XP, -15 HP</button>
+                </li>
+            </ul>
+        </div>
+        </div>
+
+    <div class="card">
+        <h2>
+            <span><i class="fas fa-store"></i> The Dopamine Cartel</span>
+        </h2>
+        
+        <div style="background: var(--inner-bg); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="color: var(--text-main); margin-top:0; font-size: 1.1em;"><i class="fas fa-chart-line" style="color:var(--neon-blue);"></i> Basecamp Analytics</h3>
+            <div style="margin-bottom: 15px;">
+                <canvas id="xpChart" height="100"></canvas>
+            </div>
+            <div>
+                <small style="color: var(--text-muted);">Consistency Heatmap (Last 30 Days)</small>
+                <div class="heatmap-container" id="heatmap"></div>
+            </div>
+        </div>
+
+        <div class="card creator-studio" id="creator-studio-ui" style="margin-bottom: 20px;">
+            <h2><i class="fas fa-video"></i> Ed-Tech Tycoon Studio</h2>
+            
+            <div class="tycoon-stats">
+                <div><i class="fas fa-users" style="color:var(--neon-pink);"></i> Enrolled Students / Subs:</div>
+                <div class="sub-count" id="subscriber-count">0</div>
+            </div>
+            <p style="font-size: 0.8em; color: var(--neon-red); margin-bottom:15px; font-weight:bold;">[TEMPTATION BUNDLING]: Fund these projects using ACADEMIC XP gained from studying Math & Physics!</p>
+
+            <ul class="action-list">
+                <li class="action-item" onclick="doCreatorHustle(150, 100, 'Script Written!')">
+                    <div class="flex-center"><i class="fas fa-pen-nib" style="color:var(--neon-pink); margin-right:10px;"></i>
+                    <div><strong>Write Video Script</strong><br><small>Cost: 150 Academic XP</small></div></div>
+                    <button class="action-btn" style="background: var(--neon-purple); color:white;">Fund (-150 AX)</button>
+                </li>
+                <li class="action-item" onclick="doCreatorHustle(300, 200, 'Video Recorded!')">
+                    <div class="flex-center"><i class="fas fa-camera" style="color:var(--neon-pink); margin-right:10px;"></i>
+                    <div><strong>Shoot Full Video</strong><br><small>Cost: 300 Academic XP</small></div></div>
+                    <button class="action-btn" style="background: var(--neon-purple); color:white;">Fund (-300 AX)</button>
+                </li>
+                <li class="action-item" onclick="doCreatorHustle(500, 400, 'Video Published!')">
+                    <div class="flex-center"><i class="fas fa-upload" style="color:var(--neon-green); margin-right:10px;"></i>
+                    <div><strong>Publish to YouTube</strong><br><small>Cost: 500 Academic XP</small></div></div>
+                    <button class="action-btn" style="background: var(--neon-purple); color:white;">Fund (-500 AX)</button>
+                </li>
+            </ul>
+        </div>
+
+        <div style="background: rgba(16, 185, 129, 0.1); border: 1px dashed var(--neon-green); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+            <h3 style="color: var(--neon-green); margin-top:0; font-size: 1.1em;"><i class="fas fa-calendar-check"></i> Daily Quests</h3>
+            <ul class="action-list" id="daily-quests-list"></ul>
+        </div>
+
+        <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px;">সোশ্যাল মিডিয়ায় সস্তা ডোপামিন না খুঁজে, নিজের অর্জিত পয়েন্ট দিয়ে ডোপামিন কিনুন।</p>
+        
+        <div class="scrollable-list" style="max-height: 250px;">
+            <ul class="shop-grid">
+                <li class="shop-item" onclick="buyToInventory(1000, 'Adrenaline Syringe (Revive)')">
+                    <div class="flex-center"><i class="fas fa-syringe shop-icon" style="color:var(--neon-green);"></i> <div><strong>Adrenaline Syringe (Revive)</strong><br><small>Streak জিরো হওয়ার হাত থেকে বাঁচায়</small></div></div>
+                    <div class="price">1000 XP</div>
+                </li>
+
+                <li class="shop-item" onclick="buyToInventory(300, 'Web Dev Template Sandbox')">
+                    <div class="flex-center"><i class="fas fa-code shop-icon" style="color:var(--neon-blue);"></i> <div><strong>Ed-Tech Sandbox</strong><br><small>ওয়েবসাইট ডিজাইনের জন্য ৩০ মিনিট এক্সপেরিমেন্ট</small></div></div>
+                    <div class="price">300 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(600, 'Creator Studio Microphone')">
+                    <div class="flex-center"><i class="fas fa-microphone shop-icon" style="color:var(--neon-pink);"></i> <div><strong>Creator Gear Upgrade</strong><br><small>ইউটিউব ভিডিওর জন্য অডিও সেটআপ আপগ্রেড</small></div></div>
+                    <div class="price">600 XP</div>
+                </li>
+
+                <li class="shop-item" id="shop-theme-crime" onclick="buyTheme('true-crime', 500, 'True Crime Theme')">
+                    <div class="flex-center"><i class="fas fa-mask shop-icon" style="color:var(--neon-red);"></i> <div><strong>UI Theme: True Crime</strong><br><small>Dark, Blood Red aesthetics</small></div></div>
+                    <div class="price">500 XP</div>
+                </li>
+                <li class="shop-item" id="shop-theme-emo" onclick="buyTheme('midwest-emo', 500, 'Midwest Emo Theme')">
+                    <div class="flex-center"><i class="fas fa-guitar shop-icon" style="color:var(--neon-blue);"></i> <div><strong>UI Theme: Midwest Emo</strong><br><small>Cool tones, melancholy vibes</small></div></div>
+                    <div class="price">500 XP</div>
+                </li>
+
+                <li class="shop-item" id="music-shop-item" onclick="unlockMusic()">
+                    <div class="flex-center"><i class="fas fa-music shop-icon" style="color:var(--neon-purple);"></i> <div><strong>Custom Focus Audio Track</strong><br><small>Midwest Emo / Hindi Lofi (Permanent Unlock)</small></div></div>
+                    <div class="price">300 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(60, 'Caffeine/Sugar Hit')">
+                    <div class="flex-center"><i class="fas fa-mug-hot shop-icon" style="color:#d97706;"></i> <div><strong>The Caffeine/Sugar Hit</strong><br><small>চা, কফি বা প্রিয় কোনো স্ন্যাকস খাওয়া</small></div></div>
+                    <div class="price">60 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(120, '20 Min Power Nap')">
+                    <div class="flex-center"><i class="fas fa-bed shop-icon" style="color:var(--neon-blue);"></i> <div><strong>Guilt-Free Power Nap</strong><br><small>অ্যালার্ম দিয়ে নিশ্চিন্তে ২০ মিনিট ঘুমানো</small></div></div>
+                    <div class="price">120 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(180, 'Music Production (30 Min)')">
+                    <div class="flex-center"><i class="fas fa-headphones-alt shop-icon" style="color:var(--neon-purple);"></i> <div><strong>The Audio Engineer</strong><br><small>৩০ মিনিট অরিজিনাল মিউজিক নিয়ে কাজ করা</small></div></div>
+                    <div class="price">180 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(200, 'Crime Patrol Episode')">
+                    <div class="flex-center"><i class="fas fa-user-secret shop-icon" style="color:var(--neon-red);"></i> <div><strong>True Crime Investigator</strong><br><small>Crime Patrol বা থ্রিলার শো-এর ১টি এপিসোড দেখা</small></div></div>
+                    <div class="price">200 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(30, '1 Song Permission')">
+                    <div class="flex-center"><i class="fas fa-music shop-icon" style="color:var(--neon-purple);"></i> <div><strong>Micro-Hit: Music</strong><br><small>১টি পছন্দের গান / মিউজিক ভিডিও</small></div></div>
+                    <div class="price">30 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(50, '5 Min FB/Insta')">
+                    <div class="flex-center"><i class="fab fa-facebook shop-icon" style="color:var(--fb-blue);"></i> <div><strong>Meme Break</strong><br><small>৫ মিনিট Facebook / Insta Scrolling</small></div></div>
+                    <div class="price">50 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(80, '10 Min Shorts/Reels')">
+                    <div class="flex-center"><i class="fab fa-tiktok shop-icon" style="color:#ff0050;"></i> <div><strong>Short-Form Dopamine</strong><br><small>১০ মিনিট Shorts / Reels / TikTok</small></div></div>
+                    <div class="price">80 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(150, '20 Min YouTube')">
+                    <div class="flex-center"><i class="fab fa-youtube shop-icon" style="color:var(--yt-red);"></i> <div><strong>The YouTube Rabbit Hole</strong><br><small>২০ মিনিট ইউটিউব ভ্লগ / লঙ ভিডিও</small></div></div>
+                    <div class="price">150 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(250, '1 Game Match / Series Episode')">
+                    <div class="flex-center"><i class="fas fa-gamepad shop-icon" style="color:var(--neon-green);"></i> <div><strong>Gamer's Paradise</strong><br><small>১টি গেম ম্যাচ / ওয়েব সিরিজের ১ এপিসোড</small></div></div>
+                    <div class="price">250 XP</div>
+                </li>
+                <li class="shop-item" onclick="buyToInventory(400, 'Mirpur/Cantonment Food')">
+                    <div class="flex-center"><i class="fas fa-hamburger shop-icon" style="color:#fbbf24;"></i> <div><strong>Foodie's Hit (Golden Ticket)</strong><br><small>বাইরে থেকে 'Hole-in-the-wall' খাবার</small></div></div>
+                    <div class="price">400 XP</div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="black-market-ui" class="card" style="display:none; border: 2px solid #8b0000; box-shadow: 0 0 20px #8b0000; margin-top: 20px; background: #050000;">
+            <h2 style="color: #ff0000; border-bottom: 1px solid #ff0000;"><i class="fas fa-skull"></i> The Black Market</h2>
+            <p style="color: #ff6666; font-size: 0.9em; font-weight: bold;">Available 12 AM - 3 AM. Heavy Sleep Deprivation Toll Applied (-HP).</p>
+            <ul class="shop-grid">
+                <li class="shop-item" style="border-color: #8b0000; background: rgba(139,0,0,0.2);" onclick="buyFromBlackMarket(200, 40, '🏆 LEGENDARY: CHEAT MEAL PASS')">
+                    <div class="flex-center"><i class="fas fa-hamburger shop-icon" style="color:#ff0000;"></i> <div><strong>Illicit Cheat Meal</strong><br><small>Cost: 200 XP & -40 HP</small></div></div>
+                    <div class="price" style="color: #ff0000;">200 XP</div>
+                </li>
+                <li class="shop-item" style="border-color: #8b0000; background: rgba(139,0,0,0.2);" onclick="buyFromBlackMarket(50, 20, '❄️ Black Market Freeze')">
+                    <div class="flex-center"><i class="fas fa-snowflake shop-icon" style="color:#ff0000;"></i> <div><strong>Illicit Freeze</strong><br><small>Cost: 50 XP & -20 HP</small></div></div>
+                    <div class="price" style="color: #ff0000;">50 XP</div>
+                </li>
+            </ul>
+        </div>
+
+        <h3 style="color: var(--neon-orange); margin-top:20px; font-size: 1.1em;"><i class="fas fa-box-open"></i> Your Inventory</h3>
+        <ul class="inventory-grid" id="inventory-list"></ul>
+
+        <div class="loot-box" onclick="rollGacha()">
+            <i class="fas fa-mobile-alt" style="font-size: 3em; color: #fff; margin-bottom: 10px;"></i>
+            <div style="font-family:'Orbitron'; font-size: 1.5em; color: #fff; font-weight: bold;">Algorithm Loot Box</div>
+            <div style="color: #fcd34d; margin-top:5px;">Cost: 100 XP</div>
+            <div id="pity-counter-text" style="color:var(--neon-orange); font-size:0.85em; margin-top:5px; font-weight:bold;">Pity: 0/5 (Guaranteed Drop at 5)</div>
+            <small style="color: #e2e8f0;">(Win Ultra Rare Drop, YouTube Time, XP Boost, or Nothing!)</small>
+        </div>
+    </div>
+</div>
+
+<script>
+    const JSONBIN_BIN_ID = "6a041e15adc21f119a92147f"; 
+    const JSONBIN_API_KEY = "$2a$10$nAphwYjwRACD6u49DAqmyOe/9QJB9Fjp7nYPPJtN.zkUpr4T/iCva"; 
+
+    let defaultDb = { 
+        xp: 0, streak: 0, level: 1, inventory: [], freeze: 0, dopamineHitsToday: 0, 
+        gachaJackpots: 0, bossDefeated: false, musicUnlocked: false, relapseTimer: 0, 
+        miniBosses: { phase1: false, phase2: false, phase3: false }, 
+        academicXP: 0, creatorXP: 0, dailyHistory: {}, completedTasks: {}, dailyStudyMinutes: {},
+        hp: 100, maxHp: 100, activeTheme: 'default', unlockedThemes: ['default'], creatorUnlocked: false,
+        subscribers: 0, cluesFound: 0, flowPoints: 0, frenzyCharges: 0,
+        vaultXP: 10000, vaultUnlocked: false,
+        isLightMode: false,
+        
+        /* NEW DATA VARIABLES */
+        gachaPityCounter: 0,
+        urgeSuccessCount: 0,
+        trophies: []
+    };
+    let db = defaultDb;
+    
+    try {
+        let savedData = JSON.parse(localStorage.getItem('lordV8')); 
+        if(savedData && typeof savedData === 'object') { db = { ...defaultDb, ...savedData }; }
+    } catch(e) { console.error("Save Load Error", e); }
+
+    if(!db.completedTasks || Array.isArray(db.completedTasks)) db.completedTasks = {};
+    if(!db.dailyHistory) db.dailyHistory = {};
+    if(!db.dailyStudyMinutes) db.dailyStudyMinutes = {};
+    if(!db.trophies) db.trophies = [];
+
+    const availableTrophies = [
+        { id: 'night_owl', name: 'Night Owl', desc: 'Studied past 2 AM', icon: 'fa-moon' },
+        { id: 'iron_mind', name: 'Iron Mind', desc: 'Resisted Urge Surfing 3 times', icon: 'fa-brain' },
+        { id: 'boss_slayer', name: 'Boss Slayer', desc: 'Defeated the Final Mock Test', icon: 'fa-skull' }
+    ];
+
+    let today = new Date().toISOString().split('T')[0];
+    if(db.lastDate !== today) {
+        db.lastDate = today; db.dopamineHitsToday = 0;
+        if(!db.dailyHistory[today]) db.dailyHistory[today] = 0;
+        if(!db.dailyStudyMinutes[today]) db.dailyStudyMinutes[today] = 0;
+    }
+
+    const trueCrimeClues = [
+        "Clue #1: 'The motive was hidden in the Matrix Transformations.'",
+        "Clue #2: 'A receipt from a Cantonment hole-in-the-wall.'",
+        "Clue #3: 'Organic Chemistry ledger showing missing electrons.'",
+        "Clue #4: 'A Thermodynamics equation that predicts the killer's next move.'"
+    ];
+
+    const spinWheelOptions = ["Mirpur: Bismillah Kabab", "Cantonment: Shawarma Spot", "Mirpur: Street Momos", "Cantonment: Hidden Biryani", "Mirpur: Chap Station"];
+
+    let currentMinibossPool = [
+        { q: "HSC Math [Trigonometry]: sin(30°) + cos(60°) এর মান কত?", a: "1" },
+        { q: "SSC Physics [Force]: 10kg ভরের বস্তুর উপর কত নিউটন বল প্রয়োগ করলে ত্বরণ 5 m/s² হবে?", a: "50" },
+        { q: "HSC Math [Calculus]: x^3 কেজি x এর সাপেক্ষে অন্তরীকরণ করে x=2 বসালে মান কত হয়?", a: "12" },
+        { q: "SSC Chemistry [Moles]: 2 মোল H2O এর ভর কত গ্রাম? (H=1, O=16)", a: "36" },
+        { q: "SSC Math [Algebra]: x+y=5 এবং x-y=1 হলে x এর মান কত?", a: "3" }
+    ];
+
+    let currentBossPool = [
+        { q: "HSC Math [Matrix Determinant]:\n | 5  2 |\n | 3  4 |", a: "14" },
+        { q: "HSC Physics [Thermodynamics]: 600K এবং 300K তাপমাত্রার মধ্যে ক্রিয়ারত কার্নো ইঞ্জিনের কর্মদক্ষতা কত শতাংশ (%)?", a: "50" },
+        { q: "HSC Math [Integration]: ∫ 2x dx এর মান কত যখন limit 0 থেকে 3?", a: "9" },
+        { q: "HSC Physics [Mechanics]: স্থির অবস্থান থেকে বিনা বাধায় পড়ন্ত বস্তুর 3 সেকেন্ড পর বেগ কত? (g=9.8)", a: "29.4" },
+        { q: "SSC Physics [Electricity]: 100W এর একটি বাল্ব 10 ঘণ্টা চললে কত ইউনিট (kWh) বিদ্যুৎ খরচ হবে?", a: "1" }
+    ];
+
+    function playSound(type) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator(); const gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            if(type === 'coin') {
+                osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+                osc.start(); osc.stop(ctx.currentTime + 0.1);
+            } else if(type === 'levelUp') {
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(400, ctx.currentTime);
+                osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(800, ctx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                osc.start(); osc.stop(ctx.currentTime + 0.4);
+            } else if(type === 'error') {
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, ctx.currentTime);
+                osc.start(); osc.stop(ctx.currentTime + 0.2);
+            } else if(type === 'boss') {
+                osc.type = 'square'; osc.frequency.setValueAtTime(50, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 1);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 5);
+                osc.start(); osc.stop(ctx.currentTime + 5);
+            } else if(type === 'heartbeat') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(40, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.5, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                osc.start(); osc.stop(ctx.currentTime + 0.3);
+            }
+        } catch(e) {}
+    }
+
+    const allMissions = {
+        "May 16": { tasks: ["অন্তরীকরণ (h)", "ম্যাট্রিক্স (e)"], tip: "প্রো-টিপ: অন্তরীকরণের শর্টকাট ট্রিক নিয়ে ১ মিনিটের শর্টস শুট করুন।" },
+        "May 17": { tasks: ["যোগজীকরণ (h)", "বৃত্ত (e)"], tip: "ফাইনম্যান টেকনিক: আয়নার সামনে কাল্পনিক স্টুডেন্টদের পড়ান।" },
+        "May 18": { tasks: ["বিন্যাস ও সমাবেশ (h)", "ত্রিকোণমিতি (e)"] },
+        "May 19": { tasks: ["ফাংশন (h)", "সরলরেখা (m)"] },
+        "May 20": { tasks: ["বাস্তব সংখ্যা ও অসমতা (h)", "জটিল সংখ্যা (m)"] },
+        "May 21": { tasks: ["যোগাশ্রয়ী প্রোগ্রামিং (h)", "বহুপদী (m)"] },
+        "May 22": { tasks: ["দ্বিপদী বিস্তৃতি (h)", "কণিক (m)"] },
+        "May 23": { tasks: ["সম্ভাবনা (h)", "স্থিতিবিদ্যা/গতিবিদ্যা (m)"] },
+        "May 24": { tasks: ["গতিবিদ্যা (h)", "ভেক্টর (e)"] },
+        "May 25": { tasks: ["পদার্থের গাঠনিক ধর্ম (h)", "মহাকর্ষ (m)"] },
+        "May 26": { tasks: ["তরঙ্গ (h)", "পর্যাবৃত্ত গতি (m)"] },
+        "May 27": { tasks: ["নিউটনিয়ান বলবিদ্যা (m)", "আদর্শ গ্যাস (m)"], tip: "সতর্কতা: মেকানিক্সের বেসিক একদম ক্লিয়ার রাখবেন, এখানেই সবচেয়ে বেশি প্রশ্ন আসে।" },
+        "May 28": { tasks: ["কাজ, শক্তি ও ক্ষমতা (h)", "পরমাণুর মডেল ও নিউক্লিয়ার পদার্থবিজ্ঞান (m)"], tip: "কাজ-শক্তি উপপাদ্য এবং বোর মডেলের ম্যাথগুলো ভালোভাবে প্র্যাকটিস করুন।" },
+        "May 29": { tasks: ["স্থির তড়িৎ (h)", "তাপগতিবিদ্যা (m)"] },
+        "May 30": { tasks: ["তড়িৎ প্রবাহের চৌম্বক ক্রিয়া (h)", "চল তড়িৎ (m)"] },
+        "May 31": { tasks: ["তাড়িতচৌম্বক আবেশ (h)", "ভৌত আলোকবিজ্ঞান (m)"] },
+        "Jun 1": { tasks: ["জ্যামিতিক আলোকবিজ্ঞান (h)", "আধুনিক পদার্থবিজ্ঞান (m)"] },
+        "Jun 2": { tasks: ["জ্যোতির্বিজ্ঞান (h)", "সেমিকন্ডাক্টর (m)"] },
+        "Jun 3": { tasks: ["মোলের ধারণা ও গণনা (h)", "পদার্থের গঠন (e)"], tip: "কানেকশন: এইচএসসির সাথে এসএসসির টপিকগুলো কীভাবে কানেক্টেড তা নিয়ে ভিডিও লেকচার ভাবুন।" },
+        "Jun 4": { tasks: ["রসায়ন ও শক্তি (h)", "পর্যায় সারণি (e)"] },
+        "Jun 5": { tasks: ["এসিড-ক্ষারক সমতা (m)", "খনিজ/ধাতু (m)", "জীবাশ্ম (e)"] },
+        "Jun 6": { tasks: ["রাসায়নিক বিক্রিয়া (h)", "রাসায়নিক বন্ধন (m)"], tip: "জারণ-বিজারণ বিক্রিয়া এবং সমযোজী/আয়নিক বন্ধনের কনসেপ্ট ক্লিয়ার রাখা খুব জরুরি।" },
+        "Jun 7": { tasks: ["চাপ (m)", "তাপ (m)", "আলোর প্রতিফলন/প্রতিসরণ (e/m)"] },
+        "Jun 8": { tasks: ["স্থির/চল তড়িৎ (m)", "বিদ্যুতের চৌম্বক ক্রিয়া (m)"] },
+        "Jun 9": { tasks: ["গতি (m)", "বল (h)"], tip: "নিউটনের সূত্র এবং গতির সমীকরণগুলো ভালো করে আত্মস্থ করুন।" },
+        "Jun 10": { tasks: ["কাজ, ক্ষমতা ও শক্তি (m)", "শব্দের কথা (e)"] },
+        "Jun 11": { tasks: ["দুই চলকবিশিষ্ট সমীকরণ (h)", "জ্যামিতি (m)"] },
+        "Jun 12": { tasks: ["বীজগণিতীয় রাশি (m)", "সসীম ধারা (e)"] },
+        "Jun 13": { tasks: ["সেট ও ফাংশন (m)", "সূচক ও লগারিদম (m)"] },
+        "Jun 14": { tasks: ["ত্রিকোণমিতি, ধারা ও বীজগণিত (m)"] },
+        "Jun 15": { tasks: ["স্থানাঙ্ক জ্যামিতি ও সমতলীয় ভেক্টর (m)"] },
+        "Jun 16": { tasks: ["সম্ভাবনা (m)", "জ্যামিতি (m)"] },
+        "Jun 17": { tasks: ["পরিমিতি ও পরিসংখ্যান (m)"] },
+        "Jun 18": { tasks: ["দ্বিপদী বিস্তৃতি (m)", "সূচকীয় ও লগারিদমিক ফাংশন (m)"] },
+        "Jun 19": { tasks: ["ঘন জ্যামিতি (m)", "সাধারণ ত্রিকোণমিতি (e)"] },
+        "Jun 20": { tasks: ["৫টি কঠিন টপিক বাছাই ও স্ক্রিপ্ট লেখা (h)"] },
+        "Jun 21": { tasks: ["অন্তরীকরণ ও মেকানিক্স ফুল-লেংথ ভিডিও শুট (h)"] },
+        "Jun 22": { tasks: ["কেমিস্ট্রি 'মোল' ও তড়িৎচুম্বকত্ব ভিডিও রেকর্ড (h)"] },
+        "Jun 23": { tasks: ["HP EliteBook দিয়ে ভিডিও এডিটিং (m)"], tip: "আপনার ল্যাপটপ দিয়ে প্রিমিয়ার প্রো বা ক্যাপকাটে স্মুথলি এডিটিং করুন।" },
+        "Jun 24": { tasks: ["ইউটিউবে আপলোড ও ফেসবুকে শেয়ার (e)"] },
+        "Jun 25": { tasks: ["সব ফর্মুলা শিট রিভাইজ (Final Boss) (h)"], tip: "আজকের দিনটি আপনার চূড়ান্ত পরীক্ষা। ১০০% ফোকাস প্রয়োজন!" }
+    };
+
+    let totalTasksCount = 0;
+    for(let key in allMissions) { if(allMissions[key].tasks) totalTasksCount += allMissions[key].tasks.length; }
+
+    let xpChartInstance = null;
+
+    // FEATURE: Light/Dark Mode Switcher
+    function toggleLightMode() {
+        db.isLightMode = !db.isLightMode;
+        save();
+    }
+
+    async function saveToCloud() {
+        if(JSONBIN_BIN_ID === "YOUR_BIN_ID_HERE" || JSONBIN_API_KEY === "YOUR_API_KEY_HERE") { alert("Sir, Please put your JSONBIN_BIN_ID and JSONBIN_API_KEY in the code first!"); return; }
+        let btn = document.getElementById('btn-save-cloud'); let originalText = btn.innerHTML; btn.innerText = "Saving...";
+        try {
+            let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY }, body: JSON.stringify(db) });
+            if(res.ok) { notify("Cloud Save Successful! ☁️", "var(--neon-green)"); playSound('coin'); } else { notify("Cloud Save Failed!", "var(--neon-red)"); }
+        } catch(e) { notify("Network Error!", "var(--neon-red)"); }
+        btn.innerHTML = originalText;
+    }
+
+    async function loadFromCloud() {
+        if(JSONBIN_BIN_ID === "YOUR_BIN_ID_HERE" || JSONBIN_API_KEY === "YOUR_API_KEY_HERE") { alert("Sir, Please put your JSONBIN_BIN_ID and JSONBIN_API_KEY in the code first!"); return; }
+        let btn = document.getElementById('btn-load-cloud'); let originalText = btn.innerHTML; btn.innerText = "Loading...";
+        try {
+            let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, { method: 'GET', headers: { 'X-Master-Key': JSONBIN_API_KEY } });
+            if(res.ok) { let data = await res.json(); db = { ...defaultDb, ...data.record }; save(); loadMission(); notify("Cloud Data Loaded! ☁️", "var(--neon-blue)"); playSound('levelUp'); } else { notify("Cloud Load Failed!", "var(--neon-red)"); }
+        } catch(e) { notify("Network Error!", "var(--neon-red)"); }
+        btn.innerHTML = originalText;
+    }
+
+    function save() { localStorage.setItem('lordV8', JSON.stringify(db)); updateUI(); }
+
+    function triggerVaultBleed(amount) {
+        db.vaultXP = Math.max(0, db.vaultXP - amount);
+        let anim = document.getElementById('vault-bleed-anim');
+        anim.innerText = `-${amount} XP BLEED!`; anim.style.display = 'block';
+        setTimeout(() => { anim.style.display = 'none'; }, 2000);
+    }
+
+    function addStudyTime(minutes) {
+        if(!db.dailyStudyMinutes) db.dailyStudyMinutes = {};
+        let todayStr = new Date().toISOString().split('T')[0];
+        db.dailyStudyMinutes[todayStr] = (db.dailyStudyMinutes[todayStr] || 0) + minutes;
+        save();
+    }
+
+    function checkRedZone() {
+        let now = new Date(); let hour = now.getHours();
+        let tasksComplete = isDailyTasksComplete();
+        // Bugfix applied here: Explicit check for midnight (hour === 0) alongside hour >= 22
+        if ((hour >= 22 || hour === 0) && !tasksComplete) { 
+            document.body.classList.add('red-zone'); document.getElementById('red-zone-ui').style.display = 'block';
+            if(hour === 0 && now.getMinutes() === 0) { triggerVaultBleed(500); notify("Midnight Vault Bleed! Tasks incomplete!", "var(--neon-red)"); playSound('error'); }
+        } else {
+            document.body.classList.remove('red-zone'); document.getElementById('red-zone-ui').style.display = 'none';
+        }
+    }
+    setInterval(checkRedZone, 60000); checkRedZone();
+
+    // FEATURE 1: Black Market Logic
+    function checkBlackMarket() {
+        let hour = new Date().getHours();
+        if(hour >= 0 && hour < 3) {
+            document.getElementById('black-market-ui').style.display = "block";
+        } else {
+            document.getElementById('black-market-ui').style.display = "none";
+        }
+    }
+    setInterval(checkBlackMarket, 60000);
+
+    function buyFromBlackMarket(costXP, costHP, item) {
+        if(db.xp >= costXP && db.hp > costHP) {
+            db.xp -= costXP;
+            db.hp -= costHP;
+            db.inventory.push(item);
+            playSound('coin'); 
+            notify(`Illicit Deal Struck: ${item} (-${costHP} HP)`, "var(--neon-red)");
+            save();
+        } else {
+            playSound('error');
+            notify("Not enough XP or HP for Black Market deal!", "var(--neon-red)");
+        }
+    }
+
+    function isDailyTasksComplete() {
+        let selectElement = document.getElementById('day-selector'); let val = selectElement.value; let safeVal = val.replace(/\s+/g, '');
+        let missionObj = allMissions[val];
+        if(!missionObj || !missionObj.tasks) return true;
+        for(let i=0; i<missionObj.tasks.length; i++) { if(!db.completedTasks[safeVal + "_" + i]) return false; }
+        return true;
+    }
+
+    function updateSprintUI() {
+        const startDate = new Date('2026-05-13');
+        const todayDate = new Date();
+        const diffTime = Math.abs(todayDate - startDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        let dayCount = diffDays;
+        if (dayCount < 1) dayCount = 1;
+        if (dayCount > 33) dayCount = 33;
+
+        let sprintMult = 1.0 + (dayCount * 0.01); 
+        let phase = "The Momentum Phase";
+        if(dayCount > 11) phase = "The Grind Phase";
+        if(dayCount > 22) phase = "The Boss Phase";
+
+        document.getElementById('sprint-banner-ui').innerText = `🔥 DAY ${dayCount} OF 33: ${phase.toUpperCase()} | SPRINT MULTIPLIER: ${sprintMult.toFixed(2)}X 🔥`;
+    }
+
+    let lowHpAudioInterval = null;
+    function manageDynamicAudio() {
+        let hpPct = (db.hp / db.maxHp) * 100;
+        if (hpPct <= 30) {
+            document.body.classList.add('low-hp-warning');
+            if (!lowHpAudioInterval) {
+                lowHpAudioInterval = setInterval(() => { playSound('heartbeat'); }, 1000);
+            }
+        } else {
+            document.body.classList.remove('low-hp-warning');
+            if (lowHpAudioInterval) {
+                clearInterval(lowHpAudioInterval);
+                lowHpAudioInterval = null;
+            }
+        }
+    }
+
+    function updateUI() {
+        updateSprintUI(); 
+        manageDynamicAudio();
+        checkBlackMarket();
+
+        // Execution of Dark/Light Engine
+        let toggleBtn = document.getElementById('mode-toggle-btn');
+        if(db.isLightMode) {
+            document.body.classList.add('light-mode');
+            toggleBtn.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+        } else {
+            document.body.classList.remove('light-mode');
+            toggleBtn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+        }
+
+        document.getElementById('xp-display').innerText = db.xp;
+        document.getElementById('level-display').innerText = db.level;
+        document.getElementById('streak-display').innerText = db.streak;
+        
+        let todayStr = new Date().toISOString().split('T')[0];
+        if(!db.dailyStudyMinutes) db.dailyStudyMinutes = {};
+        let mins = db.dailyStudyMinutes[todayStr] || 0;
+        let hrs = Math.floor(mins / 60);
+        let remMins = mins % 60;
+        document.getElementById('badge-time').innerHTML = `<i class="fas fa-clock"></i> Today: ${hrs}h ${remMins}m`;
+        
+        document.getElementById('vault-display').innerText = db.vaultXP.toLocaleString();
+        if(db.bossDefeated || new Date() >= new Date("2026-06-25")) {
+            document.getElementById('claim-vault-btn').style.display = "block";
+            document.getElementById('vault-display').style.color = "var(--neon-green)";
+        }
+
+        document.getElementById('hp-display').innerText = db.hp;
+        let hpPct = (db.hp / db.maxHp) * 100; document.getElementById('hp-bar').style.width = hpPct + "%";
+        
+        let mult = Math.min(3.0, 1 + (db.streak * 0.1));
+        
+        const diffDays = Math.ceil(Math.abs(new Date() - new Date('2026-05-13')) / (1000 * 60 * 60 * 24));
+        let sprintBonus = 1.0 + (Math.min(33, Math.max(1, diffDays)) * 0.01);
+        mult = mult * sprintBonus;
+
+        // Bugfix applied here: Prevent recursive logic flow by manually setting localStorage 
+        if(Date.now() < db.relapseTimer) { 
+            document.getElementById('relapse-warning').style.display = "block"; 
+            mult = mult * 0.5; 
+        } else { 
+            document.getElementById('relapse-warning').style.display = "none"; 
+            if(db.relapseTimer !== 0) { 
+                db.relapseTimer = 0; 
+                localStorage.setItem('lordV8', JSON.stringify(db));
+            } 
+        }
+        
+        if(db.dopamineHitsToday > 2) { mult = mult * 0.5; document.getElementById('overdose-warning').style.display = "block"; } else { document.getElementById('overdose-warning').style.display = "none"; }
+        document.getElementById('multiplier-display').innerText = mult.toFixed(1) + "x Multiplier";
+        
+        let rank = "Bronze III";
+        if(db.level >= 5) rank = "Silver II";
+        if(db.level >= 10) rank = "Gold I";
+        if(db.level >= 15) rank = "Diamond";
+        if(db.level >= 25) rank = "Heroic";
+        if(db.level >= 40) rank = "Conqueror";
+        document.getElementById('rank-name').innerText = rank;
+
+        let newLvl = Math.floor(db.xp / 600) + 1;
+        if(newLvl > db.level) { db.level = newLvl; playSound('levelUp'); confetti({particleCount: 150, spread: 80, origin: {y: 0.6}}); notify("LEVEL UP! You are now Level " + db.level, "var(--neon-blue)"); }
+
+        if(db.streak >= 7) { document.getElementById('badge-streak').style.display = "inline-block"; document.getElementById('main-dashboard').classList.add('streak-7'); } else { document.getElementById('main-dashboard').classList.remove('streak-7'); }
+        if(db.streak >= 14) { document.getElementById('main-dashboard').classList.add('streak-14'); } else { document.getElementById('main-dashboard').classList.remove('streak-14'); }
+        if(db.gachaJackpots >= 3) document.getElementById('badge-gambler').style.display = "inline-block";
+        if(db.bossDefeated) document.getElementById('badge-boss').style.display = "inline-block";
+
+        let freezeInd = document.getElementById('freeze-indicator');
+        if(db.freeze > 0) { freezeInd.style.display = "block"; freezeInd.innerText = "❄️ Freeze: " + db.freeze; } else { freezeInd.style.display = "none"; }
+
+        if(db.musicUnlocked) { 
+            document.getElementById('music-shop-item').style.display = "none"; 
+            document.getElementById('music-selector').style.display = "inline-block"; 
+            document.getElementById('lofi-mixer-ui').style.display = "flex"; // Show Lofi Mixer
+        }
+
+        if (db.activeTheme !== 'default') {
+            document.body.className = `theme-${db.activeTheme}`;
+        } else {
+            document.body.className = db.isLightMode ? 'light-mode' : '';
+        }
+        
+        if (hpPct <= 30) document.body.classList.add('low-hp-warning');
+        
+        if(db.unlockedThemes.includes('true-crime')) { document.getElementById('shop-theme-crime').style.display = "none"; document.getElementById('btn-theme-crime').style.display = "inline-block"; document.getElementById('mystery-log-ui').style.display = "block"; }
+        if(db.unlockedThemes.includes('midwest-emo')) { document.getElementById('shop-theme-emo').style.display = "none"; document.getElementById('btn-theme-emo').style.display = "inline-block"; }
+
+        if(db.creatorXP >= 500 || db.level >= 5 || db.creatorUnlocked) { db.creatorUnlocked = true; document.getElementById('creator-studio-ui').style.display = "block"; document.getElementById('subscriber-count').innerText = db.subscribers.toLocaleString(); }
+
+        let completedCount = 0;
+        for(let k in db.completedTasks) { if(db.completedTasks[k] === true) completedCount++; }
+        let progressPct = totalTasksCount > 0 ? ((completedCount / totalTasksCount) * 100).toFixed(1) : 0;
+        document.getElementById('syllabus-percent').innerText = progressPct + "%"; document.getElementById('syllabus-bar').style.width = progressPct + "%";
+
+        let flowPct = Math.min(100, db.flowPoints); document.getElementById('flow-bar-fill').style.width = flowPct + "%";
+        if(db.frenzyCharges > 0) { document.getElementById('flow-box').classList.add('frenzy-active'); document.getElementById('flow-status').innerHTML = `<span style="color:var(--neon-pink); font-weight:bold;">🔥 FRENZY ACTIVE! 2x XP for next ${db.frenzyCharges} actions!</span>`; } else { document.getElementById('flow-box').classList.remove('frenzy-active'); document.getElementById('flow-status').innerText = `Momentum: ${flowPct}%`; }
+
+        // Update Pity Counter text
+        document.getElementById('pity-counter-text').innerText = `Pity: ${db.gachaPityCounter}/5 (Guaranteed Drop at 5)`;
+
+        renderInventory(); updateSkillTrees(); renderChart(); renderHeatmap(); renderClues(); checkRedZone(); renderTrophies();
+    }
+
+    let extensionLinked = false;
+    function toggleAntiDistraction() {
+        extensionLinked = !extensionLinked;
+        let btn = document.getElementById('btn-anti-distract');
+        if(extensionLinked) {
+            btn.style.background = "var(--neon-red)"; btn.style.color = "white";
+            btn.innerHTML = '<i class="fas fa-shield-alt"></i> Blocker Linked (Active!)';
+            document.getElementById('btn-sim-distract').style.display = "inline-block";
+            notify("Anti-Distraction Protocol Active! Distractions will auto-drain HP.", "var(--neon-red)");
+        } else {
+            btn.style.background = "transparent"; btn.style.color = "var(--neon-red)";
+            btn.innerHTML = '<i class="fas fa-shield-alt"></i> Link Blocker Extension';
+            document.getElementById('btn-sim-distract').style.display = "none";
+            notify("Blocker Disabled.", "var(--text-muted)");
+        }
+    }
+
+    function simulateDistraction() {
+        if(extensionLinked) {
+            applyPenalty(15, 10, "BLOCKER ALERT: Social Media Detected!");
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 500);
+        }
+    }
+
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'DISTRACTION_DETECTED' && extensionLinked) {
+            simulateDistraction();
+        }
+    });
+
+    function addFlow(amount) {
+        if(db.frenzyCharges > 0) return; db.flowPoints += amount;
+        if(db.flowPoints >= 100) { db.flowPoints = 0; db.frenzyCharges = 5; playSound('levelUp'); confetti({particleCount: 200, spread: 100, origin: {y: 0.5}, colors: ['#ec4899', '#8b5cf6']}); notify("🔥 FLOW STATE FRENZY! 2x XP for next 5 Actions!", "var(--neon-pink)"); }
+        save();
+    }
+
+    function updateSkillTrees() {
+        let maxSkillXP = 2000;
+        let acadLvl = Math.floor(db.academicXP / 200) + 1; let creatLvl = Math.floor(db.creatorXP / 200) + 1;
+        document.getElementById('acad-lvl').innerText = "Lvl " + acadLvl; document.getElementById('creat-lvl').innerText = "Lvl " + creatLvl;
+        let acadPct = Math.min(100, (db.academicXP / maxSkillXP) * 100); let creatPct = Math.min(100, (db.creatorXP / maxSkillXP) * 100);
+        document.getElementById('bar-academic').style.width = acadPct + "%"; document.getElementById('bar-creator').style.width = creatPct + "%";
+    }
+
+    function renderChart() {
+        const ctx = document.getElementById('xpChart').getContext('2d'); let dates = []; let dataPoints = [];
+        for(let i=6; i>=0; i--) { let d = new Date(); d.setDate(d.getDate() - i); let dStr = d.toISOString().split('T')[0]; dates.push(d.toLocaleDateString('en-US', {weekday:'short'})); dataPoints.push(db.dailyHistory[dStr] || 0); }
+        if(xpChartInstance) { xpChartInstance.data.datasets[0].data = dataPoints; xpChartInstance.update(); } else {
+            xpChartInstance = new Chart(ctx, { type: 'line', data: { labels: dates, datasets: [{ label: 'Daily XP', data: dataPoints, borderColor: '#0ea5e9', backgroundColor: 'rgba(14, 165, 233, 0.2)', borderWidth: 2, fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: '#333' }, ticks: { color: '#777' } }, y: { grid: { color: '#333' }, ticks: { color: '#777' } } } } });
+        }
+    }
+
+    function renderHeatmap() {
+        let container = document.getElementById('heatmap'); container.innerHTML = "";
+        for(let i=34; i>=0; i--) { 
+            let d = new Date(); 
+            d.setDate(d.getDate() - i); 
+            let dStr = d.toISOString().split('T')[0]; 
+            let xp = db.dailyHistory[dStr] || 0; 
+            let mins = db.dailyStudyMinutes[dStr] || 0; 
+            let hrs = Math.floor(mins / 60); 
+            let remMins = mins % 60;
+            let heatClass = "";
+            if(xp > 500) heatClass = "heat-lvl-4"; else if(xp > 200) heatClass = "heat-lvl-3"; else if(xp > 50) heatClass = "heat-lvl-2"; else if(xp > 0) heatClass = "heat-lvl-1";
+            container.innerHTML += `<div class="heat-box ${heatClass}" title="Date: ${dStr}">
+                <span class="heat-time">${hrs}h ${remMins}m</span>
+                <span class="heat-xp">${xp} XP</span>
+            </div>`;
+        }
+    }
+
+    function renderClues() {
+        let cont = document.getElementById('clues-container'); cont.innerHTML = "";
+        for(let i=0; i<db.cluesFound; i++) { cont.innerHTML += `<div class="clue-item">${trueCrimeClues[i]}</div>`; }
+        if(db.cluesFound >= trueCrimeClues.length && !db.bossDefeated) { document.getElementById('solve-mystery-btn').style.display = "block"; } else { document.getElementById('solve-mystery-btn').style.display = "none"; }
+    }
+
+    function solveMystery() { db.xp += 1000; db.cluesFound = 0; playSound('levelUp'); confetti({particleCount: 400, spread: 120, origin: {y: 0.5}}); notify("Mystery Solved! 'The Physics Professor Did It'. +1000 XP!", "var(--neon-purple)"); save(); }
+
+    function notify(msg, color) { let n = document.getElementById('notif'); n.innerText = msg; n.style.background = color || "var(--neon-green)"; n.style.transform = "translateX(0)"; setTimeout(() => n.style.transform = "translateX(150%)", 3000); }
+
+    function addXP(base, msg, skillType) {
+        playSound('coin'); 
+        
+        let mult = Math.min(3.0, 1 + (db.streak * 0.1));
+        const diffDays = Math.ceil(Math.abs(new Date() - new Date('2026-05-13')) / (1000 * 60 * 60 * 24));
+        let sprintBonus = 1.0 + (Math.min(33, Math.max(1, diffDays)) * 0.01);
+        mult = mult * sprintBonus; 
+
+        if(db.dopamineHitsToday > 2) mult = mult * 0.5; if(Date.now() < db.relapseTimer) mult = mult * 0.5; 
+        let earned = Math.floor(base * mult);
+        if(db.frenzyCharges > 0 && earned > 0) { earned *= 2; db.frenzyCharges--; }
+        db.xp += earned; db.streak += 1;
+        if(skillType === 'academic') db.academicXP += earned;
+        if(skillType === 'creator') { db.creatorXP += earned; let subGain = Math.floor(Math.random() * 15) + 5; db.subscribers += subGain; notify(`+${earned} XP & +${subGain} Subs: ${msg}`); } else { notify("+" + earned + " XP: " + msg); }
+        let todayStr = new Date().toISOString().split('T')[0]; db.dailyHistory[todayStr] = (db.dailyHistory[todayStr] || 0) + earned;
+        if(db.unlockedThemes.includes('true-crime') && Math.random() > 0.8 && db.cluesFound < trueCrimeClues.length) { db.cluesFound++; setTimeout(() => notify("🔍 New True Crime Clue Found!", "var(--neon-purple)"), 1500); }
+        save();
+    }
+
+    function doCreatorHustle(costAcadXP, gainCreatXP, msg) {
+        if(db.academicXP >= costAcadXP) {
+            db.academicXP -= costAcadXP; db.creatorXP += gainCreatXP; db.xp += gainCreatXP; 
+            let subGain = Math.floor(Math.random() * 50) + 10; db.subscribers += subGain;
+            playSound('coin'); notify(`Funded! -${costAcadXP} Acad XP | +${gainCreatXP} Creator XP | +${subGain} Subs!`, "var(--neon-pink)"); save();
+        } else { playSound('error'); notify(`Need ${costAcadXP} Academic XP to fund this! Grind more Math/Physics!`, "var(--neon-red)"); }
+    }
+
+    function recoverHP(amount, msg) { db.hp = Math.min(db.maxHp, db.hp + amount); playSound('levelUp'); notify(msg, "var(--neon-green)"); save(); }
+
+    function handleDeath() {
+        playSound('error'); alert("CRITICAL FAILURE! HP Reached 0. You have burnt out.\nPenalty: Level Reset to 1, XP Halved, Inventory Cleared.");
+        db.hp = db.maxHp; db.level = 1; db.xp = Math.floor(db.xp / 2); db.inventory = []; db.streak = 0; save();
+    }
+
+    function applyPenalty(amountXP, amountHP, reason) {
+        db.xp -= amountXP; db.hp -= amountHP; playSound('error'); notify("Penalty: " + reason + " (-" + amountXP + " XP, -" + amountHP + " HP)", "var(--neon-red)");
+        if(db.hp <= 0) handleDeath(); else save();
+    }
+
+    function triggerRelapse() {
+        let penaltyXP = 200; let penaltyHP = 40;
+        db.xp = Math.max(0, db.xp - penaltyXP); db.hp -= penaltyHP; db.relapseTimer = Date.now() + (24 * 60 * 60 * 1000); db.streak = 0; 
+        triggerVaultBleed(2000); 
+        playSound('error'); notify("⚠️ RELAPSE! Massive Vault Bleed & 50% XP Penalty for 24h!", "var(--neon-red)");
+        if(db.hp <= 0) handleDeath(); else save();
+    }
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden && isRunning) { applyPenalty(25, 10, "Auto-Penalty: Tab switched during Focus Protocol!"); let audioPlayer = document.getElementById('focus-audio'); if(audioPlayer) audioPlayer.pause(); pauseAmbientMixer(); }
+    });
+
+    setInterval(() => {
+        if(db.creatorUnlocked && db.subscribers > 0) {
+            let passiveXP = Math.floor(db.subscribers * 0.05);
+            if(passiveXP > 0) { db.xp += passiveXP; document.getElementById('xp-display').innerText = db.xp; localStorage.setItem('lordV8', JSON.stringify(db)); }
+        }
+    }, 60000); 
+
+    function buyTheme(themeId, cost, name) {
+        if(db.xp >= cost) { db.xp -= cost; db.unlockedThemes.push(themeId); playSound('levelUp'); notify("Theme Unlocked: " + name, "var(--neon-purple)"); setTheme(themeId); save(); } 
+        else { playSound('error'); notify("Need " + cost + " XP to unlock this theme!", "var(--neon-red)"); }
+    }
+
+    function setTheme(themeId) { if(db.unlockedThemes.includes(themeId) || themeId === 'default') { db.activeTheme = themeId; save(); } }
+
+    function unlockMusic() {
+        if(db.musicUnlocked) { notify("Already unlocked!", "var(--neon-blue)"); return; }
+        if(db.xp >= 300) { db.xp -= 300; db.musicUnlocked = true; playSound('levelUp'); notify("🎶 Custom Focus Music & Lofi Mixer Unlocked!", "var(--neon-purple)"); save(); } 
+        else { playSound('error'); notify("Need 300 XP to unlock music!", "var(--neon-red)"); }
+    }
+
+    function changeMusic() { let sel = document.getElementById('music-selector').value; let aud = document.getElementById('focus-audio'); aud.src = sel; if(isRunning) aud.play(); }
+
+    function showGoldenTicket() { document.getElementById('ticket-modal').style.display = "flex"; document.getElementById('slot-result').innerText = "READY TO SPIN"; document.getElementById('spin-btn').style.display = "block"; document.getElementById('claim-btn').style.display = "none"; playSound('levelUp'); }
+
+    function spinRoulette() {
+        let btn = document.getElementById('spin-btn'); btn.style.display = "none"; playSound('coin'); let slot = document.getElementById('slot-result'); let spins = 0;
+        let interval = setInterval(() => {
+            slot.innerText = spinWheelOptions[Math.floor(Math.random() * spinWheelOptions.length)]; spins++;
+            if(spins > 20) { clearInterval(interval); let finalPick = spinWheelOptions[Math.floor(Math.random() * spinWheelOptions.length)]; slot.innerText = "🏆 " + finalPick; slot.style.color = "gold"; confetti({particleCount: 300, spread: 150, origin: {y: 0.5}, colors: ['#ffd700', '#ffffff']}); document.getElementById('claim-btn').style.display = "block"; }
+        }, 100);
+    }
+
+    function closeTicket() { document.getElementById('ticket-modal').style.display = "none"; }
+
+    function buyToInventory(cost, item) {
+        if(db.xp >= cost) { db.xp -= cost; db.inventory.push(item); playSound('coin'); notify("Bought & Stashed: " + item, "var(--neon-orange)"); save(); }
+        else { playSound('error'); notify("XP Shortage! Get back to studying.", "var(--neon-red)"); }
+    }
+
+    function useItem(index) {
+        let item = db.inventory[index]; db.inventory.splice(index, 1); db.dopamineHitsToday += 1;
+        if(item.includes("Mirpur/Cantonment Food") || item.includes("CHEAT MEAL")) { showGoldenTicket(); } else { notify("Consuming Dopamine: " + item, "var(--neon-pink)"); }
+        save();
+    }
+
+    function renderInventory() {
+        let list = document.getElementById('inventory-list'); list.innerHTML = "";
+        if(db.inventory.length === 0) { list.innerHTML = "<li style='color:var(--text-muted); font-size:0.9em;'>Inventory is empty.</li>"; return; }
+        db.inventory.forEach((item, index) => { list.innerHTML += `<li class="inventory-item"><div><i class="fas fa-cube" style="color:var(--neon-orange); margin-right:10px;"></i> ${item}</div><button class="inventory-btn" onclick="useItem(${index})">Use</button></li>`; });
+    }
+
+    function buyFreeze() { if(db.xp >= 300) { db.xp -= 300; db.freeze += 1; playSound('coin'); notify("Streak Freeze Active!", "#3b82f6"); save(); } else { playSound('error'); notify("Need 300 XP to buy Freeze", "var(--neon-red)"); } }
+
+    // FEATURE 5: GACHA PITY SYSTEM
+    function rollGacha() {
+        if(db.xp >= 100) {
+            db.xp -= 100;
+            db.gachaPityCounter++;
+            updateUI();
+            
+            document.getElementById('gacha-overlay').style.display = 'flex';
+            playSound('boss'); 
+            
+            setTimeout(() => {
+                document.getElementById('gacha-overlay').style.display = 'none';
+                let roll = Math.random();
+                
+                // Trigger Pity System
+                if(db.gachaPityCounter >= 5) {
+                    roll = 0.99; // Guarantee Epic/Legendary
+                    notify("✨ PITY SYSTEM ACTIVATED! Guaranteed Drop!", "var(--neon-blue)");
+                }
+
+                if(roll > 0.98) { 
+                    db.inventory.push("🏆 LEGENDARY: CHEAT MEAL PASS"); 
+                    db.gachaPityCounter = 0; // Reset pity
+                    playSound('levelUp'); confetti({particleCount: 300, spread: 150, origin: {y: 0.5}}); notify("🔥 MYTHIC DROP! Cheat Meal Unlocked!", "#fbbf24"); 
+                }
+                else if(roll > 0.85) { 
+                    db.xp += 350; db.gachaJackpots += 1; 
+                    db.gachaPityCounter = 0; // Reset pity
+                    playSound('levelUp'); confetti({particleCount: 200, spread: 100, origin: {y: 0.5}}); notify("🎉 MEGA JACKPOT! +350 XP", "var(--neon-purple)"); 
+                }
+                else if(roll > 0.6) { 
+                    db.xp += 150; 
+                    playSound('coin'); notify("🎉 Minor Jackpot! +150 XP", "var(--neon-blue)"); 
+                }
+                else if(roll > 0.3) { 
+                    db.inventory.push("15 Min Free Media"); 
+                    playSound('coin'); notify("📱 Reward: 15 mins Pass Stashed!", "var(--neon-pink)"); 
+                }
+                else { 
+                    playSound('error'); notify("❌ Box empty! Algorithm tricked you.", "var(--neon-red)"); 
+                }
+                save();
+            }, 3500); 
+        } else { playSound('error'); notify("Need 100 XP to roll!", "var(--neon-red)"); }
+    }
+
+    function breakStreak() { 
+        let syringeIdx = db.inventory.findIndex(i => i.includes("Adrenaline Syringe"));
+        if(syringeIdx !== -1) {
+            db.inventory.splice(syringeIdx, 1);
+            playSound('levelUp'); notify("💉 Adrenaline Syringe Used! Streak Saved!", "var(--neon-green)");
+            save(); return;
+        }
+
+        if(db.freeze > 0) { db.freeze -= 1; notify("❄️ Streak Saved by Freeze!", "#3b82f6"); } 
+        else { db.streak = 0; db.xp = Math.max(0, db.xp - 30); db.hp -= 10; triggerVaultBleed(500); playSound('error'); notify("Streak Broken! Vault Bleed -500 XP, -10 HP.", "var(--neon-red)"); if(db.hp <= 0) handleDeath(); }
+        save(); 
+    }
+
+    function claimVault() {
+        if(db.vaultXP > 0) { db.xp += db.vaultXP; db.vaultXP = 0; playSound('levelUp'); confetti({particleCount: 1000, spread: 360, origin: {y: 0.5}}); notify("💰 ESCROW VAULT CLAIMED! MASSIVE XP GAIN!", "gold"); save(); }
+    }
+
+    // FEATURE: TROPHY SYSTEM UNLOCK FUNCTION
+    function unlockTrophy(id) {
+        if(!db.trophies.includes(id)) {
+            db.trophies.push(id);
+            let t = availableTrophies.find(x => x.id === id);
+            if(t) {
+                playSound('levelUp');
+                notify(`🏆 ACHIEVEMENT UNLOCKED: ${t.name}!`, "gold");
+            }
+            save();
+        }
+    }
+
+    function renderTrophies() {
+        let grid = document.getElementById('trophy-grid-ui');
+        grid.innerHTML = "";
+        availableTrophies.forEach(t => {
+            let isUnlocked = db.trophies.includes(t.id);
+            let classStr = isUnlocked ? "trophy-item unlocked" : "trophy-item";
+            grid.innerHTML += `<div class="${classStr}">
+                <i class="fas ${t.icon}"></i>
+                <span>${t.name}</span>
+                <small style="color:var(--text-muted); font-size:0.7em; margin-top:5px;">${t.desc}</small>
+            </div>`;
+        });
+    }
+
+    // FEATURE 2: DYNAMIC TASK PRIORITIZATION
+    function toggleTask(taskId, diffLevel) {
+        let chk = document.getElementById(`task_${taskId}`); if(!chk) return; let isChecked = chk.checked; db.completedTasks[taskId] = isChecked;
+        let label = document.getElementById(`label_${taskId}`);
+        
+        if(isChecked) {
+            label.classList.add('task-done'); 
+            playSound('coin'); 
+            
+            // Dynamic Rewards based on difficulty
+            let xpReward = 15; let flowReward = 10;
+            if(diffLevel === 'h') { xpReward = 50; flowReward = 25; }
+            else if(diffLevel === 'm') { xpReward = 30; flowReward = 15; }
+            
+            addXP(xpReward, `Task Checked (${diffLevel.toUpperCase()})`, 'academic');
+            addFlow(flowReward);
+            
+            // Check for Night Owl Trophy
+            let hr = new Date().getHours();
+            if(hr >= 2 && hr < 5) { unlockTrophy('night_owl'); }
+
+            if(db.unlockedThemes.includes('true-crime') && Math.random() > 0.7 && db.cluesFound < trueCrimeClues.length) { db.cluesFound++; setTimeout(() => notify("🔍 New True Crime Clue Found!", "var(--neon-purple)"), 1500); }
+        } else { 
+            // Optional: Deduct XP if unchecked to prevent farming, but for now just remove visual class
+            label.classList.remove('task-done'); 
+            db.xp = Math.max(0, db.xp - 15); // Base deduction to stop abuse
+        }
+        save(); 
+    }
+
+    function loadMission() {
+        let selectElement = document.getElementById('day-selector'); let val = selectElement.value; let txt = selectElement.options[selectElement.selectedIndex].text;
+        let missionObj = allMissions[val]; let html = `<strong style="font-size:1.2em; color:var(--text-main); border-bottom: 2px solid var(--neon-pink); padding-bottom:5px; display:inline-block; margin-bottom:15px;">${txt}</strong><br>`;
+        if(missionObj && missionObj.tasks) {
+            let safeVal = val.replace(/\s+/g, ''); 
+            missionObj.tasks.forEach((task, idx) => {
+                let taskId = safeVal + "_" + idx; let isChecked = db.completedTasks[taskId] ? 'checked' : ''; let labelClass = isChecked ? 'task-label task-done' : 'task-label';
+                
+                // Extract Difficulty Tag
+                let diff = 'e'; let badgeClass = "badge-e"; let badgeText = "EASY";
+                if(task.includes('(h)')) { diff = 'h'; badgeClass = "badge-h"; badgeText = "HARD"; }
+                else if(task.includes('(m)')) { diff = 'm'; badgeClass = "badge-m"; badgeText = "MEDIUM"; }
+
+                html += `<div class="task-checkbox-container">
+                            <input type="checkbox" id="task_${taskId}" class="task-checkbox" ${isChecked} onchange="toggleTask('${taskId}', '${diff}')">
+                            <label for="task_${taskId}" id="label_${taskId}" class="${labelClass}">${task}</label>
+                            <span class="task-badge ${badgeClass}">${badgeText}</span>
+                        </div>`;
+            });
+            if(missionObj.tip) { html += `<div style="margin-top:15px; padding:12px; background:rgba(255,255,255,0.05); border-left: 3px solid #fcd34d; border-radius:4px;"><i class="fas fa-lightbulb" style="color:#fcd34d;"></i> <span style="color:var(--text-muted); font-size:0.95em;">${missionObj.tip}</span></div>`; }
+        } else { html += `<i style="color:var(--text-muted);">মাস্টারপ্ল্যান অনুযায়ী এই চ্যাপ্টারটি কমপ্লিট করুন।</i>`; }
+        document.getElementById('mission-text').innerHTML = html;
+        document.getElementById('boss-fight-ui').style.display = "none"; document.getElementById('miniboss-ui').style.display = "none";
+        
+        if(val === "Jun 25") { document.getElementById('boss-fight-ui').style.display = "block"; } 
+        else if (val === "May 28") { document.getElementById('miniboss-ui').style.display = "block"; } 
+        else if (val === "Jun 6") { document.getElementById('miniboss-ui').style.display = "block"; } 
+        else if (val === "Jun 19") { document.getElementById('miniboss-ui').style.display = "block"; }
+    }
+
+    // Bugfix applied here: Explicit tracking of which boss is being fought.
+    let bossFightTimerInterval;
+    let bossTimeLeft = 120;
+    let activeBossAnswer = "";
+    let activeBossType = ""; 
+
+    function attemptInteractiveMiniBoss() {
+        if(db.xp >= 300 && db.streak >= 7) {
+            let qObj = currentMinibossPool[Math.floor(Math.random() * currentMinibossPool.length)];
+            document.getElementById('interactive-boss-modal').style.display = "flex";
+            document.getElementById('boss-question-text').innerText = qObj.q;
+            activeBossAnswer = qObj.a;
+            activeBossType = "mini"; // Record the fight type
+            bossTimeLeft = 120;
+            document.getElementById('boss-answer-input').value = "";
+            playSound('boss');
+            
+            bossFightTimerInterval = setInterval(() => {
+                bossTimeLeft--; document.getElementById('boss-fight-timer').innerText = formatTime(bossTimeLeft);
+                if(bossTimeLeft <= 0) { clearInterval(bossFightTimerInterval); bossFightFail(300); }
+            }, 1000);
+        } else { playSound('error'); notify("Need 300 XP and 7-Day Streak!", "var(--neon-red)"); }
+    }
+
+    function attemptInteractiveBoss() {
+        let acadLvl = Math.floor(db.academicXP / 200) + 1;
+        if(db.xp >= 1000 && acadLvl >= 10) {
+            let qObj = currentBossPool[Math.floor(Math.random() * currentBossPool.length)];
+            document.getElementById('interactive-boss-modal').style.display = "flex";
+            document.getElementById('boss-question-text').innerText = qObj.q;
+            activeBossAnswer = qObj.a;
+            activeBossType = "final"; // Record the fight type
+            bossTimeLeft = 120;
+            document.getElementById('boss-answer-input').value = "";
+            playSound('boss');
+            
+            bossFightTimerInterval = setInterval(() => {
+                bossTimeLeft--; document.getElementById('boss-fight-timer').innerText = formatTime(bossTimeLeft);
+                if(bossTimeLeft <= 0) { clearInterval(bossFightTimerInterval); bossFightFail(1000); }
+            }, 1000);
+        } else { playSound('error'); notify("Need 1000 XP & Academic Lvl 10 to attempt!", "var(--neon-red)"); }
+    }
+
+    function submitBossAnswer() {
+        let val = document.getElementById('boss-answer-input').value.trim();
+        clearInterval(bossFightTimerInterval);
+        
+        if(val === activeBossAnswer) {
+            document.getElementById('interactive-boss-modal').style.display = "none";
+            
+            // Bugfix applied here: Trust the active boss type variable instead of array matching
+            let isFinal = (activeBossType === "final");
+
+            if(isFinal) { 
+                db.xp -= 1000; db.bossDefeated = true; db.subscribers += 25000; 
+                unlockTrophy('boss_slayer');
+                playSound('levelUp'); confetti({particleCount: 500, spread: 160, origin: {y: 0.3}});
+                notify("🏆 FINAL BOSS DEFEATED! ESCROW VAULT UNLOCKED!", "gold");
+                document.getElementById('final-boss-btn').innerText = "BOSS DEFEATED!";
+            } else { 
+                db.xp -= 300; db.xp += 500; db.inventory.push("🎁 Mini-Boss Legendary Loot Box"); db.subscribers += 5000; 
+                playSound('levelUp'); confetti({particleCount: 250, spread: 100, origin: {y: 0.4}});
+                notify("🏆 Mini-Boss Defeated! +500 XP & +5,000 Subs!", "var(--neon-orange)");
+            }
+            save();
+        } else {
+            let isFinal = (activeBossType === "final");
+            bossFightFail(isFinal ? 1000 : 300);
+        }
+    }
+
+    function bossFightFail(xpCost) {
+        document.getElementById('interactive-boss-modal').style.display = "none";
+        let dmg = Math.floor(db.maxHp * 0.4); 
+        db.hp -= dmg;
+        db.xp -= xpCost; 
+        playSound('error');
+        notify("💥 BOSS STRIKE! Wrong answer/Timeout. -" + dmg + " HP!", "var(--neon-red)");
+        if(db.hp <= 0) handleDeath(); else save();
+    }
+
+    // AMBIENT MIXER LOGIC
+    function updateMixerVol(type, val) {
+        let aud = document.getElementById(`audio-${type}`);
+        if(aud) aud.volume = parseFloat(val);
+        if(isRunning && parseFloat(val) > 0 && aud.paused) { aud.play().catch(e=>console.log(e)); }
+        else if (parseFloat(val) === 0) { aud.pause(); }
+    }
+    function playAmbientMixer() {
+        ['rain', 'cafe', 'fire'].forEach(type => {
+            let val = document.getElementById(`vol-${type}`).value;
+            let aud = document.getElementById(`audio-${type}`);
+            if(parseFloat(val) > 0 && aud) aud.play().catch(e=>console.log(e));
+        });
+    }
+    function pauseAmbientMixer() {
+        ['rain', 'cafe', 'fire'].forEach(type => {
+            let aud = document.getElementById(`audio-${type}`);
+            if(aud) aud.pause();
+        });
+    }
+
+    let timerInterval; let timeLeft = 1500; let isRunning = false;
+    let urgeTimeLeft = 60; let urgeTimerInterval;
+
+    function formatTime(seconds) { let m = Math.floor(seconds / 60); let s = seconds % 60; return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s; }
+
+    function startTimer() {
+        if(isRunning) return; isRunning = true;
+        let audioPlayer = document.getElementById('focus-audio');
+        if(db.musicUnlocked) { 
+            document.getElementById('music-indicator').style.display = "block"; 
+            audioPlayer.style.display = "block"; 
+            audioPlayer.play().catch(e => console.log("Audio block")); 
+            playAmbientMixer();
+        }
+
+        timerInterval = setInterval(() => {
+            timeLeft--; document.getElementById('timer-text').innerText = formatTime(timeLeft);
+            
+            if(timeLeft === 300) { 
+                document.getElementById('pomodoro-box').style.borderColor = "var(--neon-red)";
+                document.getElementById('timer-text').style.color = "var(--neon-red)";
+                document.getElementById('music-status-text').innerText = "Hyper-Focus Initiated! (Tempo Fast)";
+                if(db.musicUnlocked && audioPlayer) audioPlayer.playbackRate = 1.30; 
+            }
+
+            if(timeLeft <= 0) {
+                clearInterval(timerInterval); isRunning = false; timeLeft = 1500; document.getElementById('timer-text').innerText = "25:00";
+                document.getElementById('music-indicator').style.display = "none"; audioPlayer.pause(); audioPlayer.style.display = "none"; pauseAmbientMixer();
+                document.getElementById('pomodoro-box').style.borderColor = "var(--neon-blue)"; document.getElementById('timer-text').style.color = "var(--neon-blue)";
+                audioPlayer.playbackRate = 1.0; document.getElementById('music-status-text').innerText = "Playing Custom Audio";
+
+                addStudyTime(25);
+                addFlow(25); 
+                let roll = Math.random();
+                if(roll > 0.99) { db.inventory.push("🏆 LEGENDARY: CHEAT MEAL PASS"); addXP(100, "Golden Pomodoro Drop!", "general"); showGoldenTicket(); } 
+                else if (roll > 0.90) { db.inventory.push("15 Min Free Media"); addXP(50, "Epic Pomodoro Drop!", "general"); notify("Loot Dropped: 15 Min Media Pass!", "var(--neon-purple)"); } 
+                else if (roll > 0.70) { addXP(100, "Critical Focus Drop!", "general"); } 
+                else { addXP(50, "Focus Session Complete!", "general"); }
+                playSound('levelUp');
+            }
+        }, 1000);
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval); isRunning = false; timeLeft = 1500; document.getElementById('timer-text').innerText = "25:00";
+        document.getElementById('pomodoro-box').style.borderColor = "var(--neon-blue)"; document.getElementById('timer-text').style.color = "var(--neon-blue)";
+        let audioPlayer = document.getElementById('focus-audio'); audioPlayer.playbackRate = 1.0; document.getElementById('music-status-text').innerText = "Playing Custom Audio";
+        document.getElementById('music-indicator').style.display = "none"; audioPlayer.pause(); audioPlayer.currentTime = 0; audioPlayer.style.display = "none";
+        pauseAmbientMixer();
+    }
+
+    function startUrgeSurfing() {
+        document.getElementById('urge-modal').style.display = "flex"; urgeTimeLeft = 60; document.getElementById('urge-timer-text').innerText = urgeTimeLeft; playSound('error'); 
+        urgeTimerInterval = setInterval(() => { 
+            urgeTimeLeft--; 
+            document.getElementById('urge-timer-text').innerText = urgeTimeLeft; 
+            if(urgeTimeLeft <= 0) { 
+                clearInterval(urgeTimerInterval); 
+                document.getElementById('urge-modal').style.display = "none"; 
+                addXP(30, "Willpower Defense Successful!", "general"); 
+                
+                // Trophy Tracker Logic
+                db.urgeSuccessCount = (db.urgeSuccessCount || 0) + 1;
+                if(db.urgeSuccessCount >= 3) { unlockTrophy('iron_mind'); }
+                
+                playSound('levelUp'); 
+            } 
+        }, 1000);
+    }
+
+    function failUrge() { clearInterval(urgeTimerInterval); document.getElementById('urge-modal').style.display = "none"; applyPenalty(20, 5, "Failed to resist the urge."); }
+
+    const possibleQuests = [ {name: "Hydration Check (3L Water)", xp: 20}, {name: "10 Min Morning Meditation", xp: 30}, {name: "Clean Study Desk", xp: 25}, {name: "Solve 5 Unknown Math Problems", xp: 40}, {name: "No Phone Before Breakfast", xp: 35} ];
+    function renderQuests() { let list = document.getElementById('daily-quests-list'); list.innerHTML = ""; for(let i=0; i<2; i++) { list.innerHTML += `<li class="quest-item" onclick="completeQuest(this, ${possibleQuests[i].xp})"><div class="flex-center"><i class="fas fa-check-circle" style="color:var(--neon-green); margin-right:10px;"></i> ${possibleQuests[i].name}</div><div class="price">+${possibleQuests[i].xp} XP</div></li>`; } }
+    function completeQuest(element, xp) { element.style.opacity = "0.5"; element.onclick = null; addXP(xp, "Daily Quest Completed!", "general"); }
+
+    function exportData() { let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)); let dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr); dlAnchorElem.setAttribute("download", "tuition_lord_save.json"); dlAnchorElem.click(); }
+    function importData() { let input = prompt("Paste your JSON save data here:"); if(input) { try { db = JSON.parse(input); save(); notify("Data Imported Successfully!", "var(--neon-green)"); loadMission(); } catch(e) { alert("Invalid save data!"); } } }
+
+    loadMission(); renderQuests(); updateUI();
+</script>
+
+</body>
+</html>
