@@ -790,6 +790,11 @@
             </ul>
         </div>
 
+        <div style="margin-top: 20px; padding: 15px; border: 1px dashed var(--neon-green); border-radius: 8px; background: rgba(16, 185, 129, 0.05);">
+            <h3 style="color: var(--neon-green); margin-top: 0; font-size: 1.1em;"><i class="fas fa-praying-hands"></i> Daily Namaz Protocol</h3>
+            <p style="color: var(--text-muted); font-size: 0.85em; margin-bottom: 10px;">নামাজ পড়লে +50 XP। মিস করলে বা আনচেক করলে -50 XP এবং -15 HP!</p>
+            <div id="namaz-list"></div>
+        </div>
         <button style="width:100%; padding:12px; margin-top:15px; background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red); border-radius: 5px; cursor:pointer; font-weight:bold; letter-spacing:1px;" onclick="breakStreak()">I BROKE MY ROUTINE (Vault Bleed / -30 XP / -10 HP)</button>
         <button style="width:100%; padding:12px; margin-top:10px; background: #7f1d1d; border: 1px solid red; color: white; border-radius: 5px; cursor:pointer; font-weight:bold; letter-spacing:1px;" onclick="triggerRelapse()"><i class="fas fa-skull-crossbones"></i> I RELAPSED (Massive Vault Bleed! -200 XP, -40 HP & 24h Penalty)</button>
 
@@ -985,6 +990,7 @@
         subscribers: 0, cluesFound: 0, flowPoints: 0, frenzyCharges: 0,
         vaultXP: 10000, vaultUnlocked: false,
         isLightMode: false,
+        namaz: { Fajr: false, Dhuhr: false, Asr: false, Maghrib: false, Isha: false }, // Namaz Feature added here
         
         /* NEW DATA VARIABLES */
         gachaPityCounter: 0,
@@ -1002,6 +1008,7 @@
     if(!db.dailyHistory) db.dailyHistory = {};
     if(!db.dailyStudyMinutes) db.dailyStudyMinutes = {};
     if(!db.trophies) db.trophies = [];
+    if(!db.namaz) db.namaz = { Fajr: false, Dhuhr: false, Asr: false, Maghrib: false, Isha: false };
 
     const availableTrophies = [
         { id: 'night_owl', name: 'Night Owl', desc: 'Studied past 2 AM', icon: 'fa-moon' },
@@ -1014,6 +1021,7 @@
         db.lastDate = today; db.dopamineHitsToday = 0;
         if(!db.dailyHistory[today]) db.dailyHistory[today] = 0;
         if(!db.dailyStudyMinutes[today]) db.dailyStudyMinutes[today] = 0;
+        db.namaz = { Fajr: false, Dhuhr: false, Asr: false, Maghrib: false, Isha: false }; // Auto-reset prayers daily
     }
 
     const trueCrimeClues = [
@@ -1250,10 +1258,46 @@
         }
     }
 
+    // FUNCTION TO RENDER NAMAZ SECTION
+    function renderNamaz() {
+        const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+        let html = '';
+        if(!db.namaz) db.namaz = { Fajr: false, Dhuhr: false, Asr: false, Maghrib: false, Isha: false };
+        prayers.forEach(p => {
+            let isChecked = db.namaz[p] ? 'checked' : '';
+            let labelClass = isChecked ? 'task-label task-done' : 'task-label';
+            html += `<div class="task-checkbox-container" style="padding: 8px 15px; margin: 8px 0; border: 1px solid rgba(16, 185, 129, 0.3);">
+                        <input type="checkbox" id="namaz_${p}" class="task-checkbox" ${isChecked} onchange="toggleNamaz('${p}')">
+                        <label for="namaz_${p}" id="label_namaz_${p}" class="${labelClass}">${p} Prayer</label>
+                    </div>`;
+        });
+        document.getElementById('namaz-list').innerHTML = html;
+    }
+
+    // LOGIC FOR TOGGLING NAMAZ
+    function toggleNamaz(prayer) {
+        let chk = document.getElementById(`namaz_${prayer}`);
+        if(!chk) return;
+        let isChecked = chk.checked;
+        if(!db.namaz) db.namaz = {};
+        db.namaz[prayer] = isChecked;
+
+        let label = document.getElementById(`label_namaz_${prayer}`);
+        if(isChecked) {
+            label.classList.add('task-done');
+            addXP(50, `${prayer} Namaz Completed!`, 'general');
+        } else {
+            label.classList.remove('task-done');
+            applyPenalty(50, 15, `Missed ${prayer} Namaz!`);
+        }
+        save();
+    }
+
     function updateUI() {
         updateSprintUI(); 
         manageDynamicAudio();
         checkBlackMarket();
+        renderNamaz(); // Update Namaz Section
 
         // Execution of Dark/Light Engine
         let toggleBtn = document.getElementById('mode-toggle-btn');
