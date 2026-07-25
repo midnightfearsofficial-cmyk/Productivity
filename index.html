@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Orbitron:wght@500;700&display=swap');
 
         /* Default Dark Theme Variables */
         :root {
@@ -102,43 +102,6 @@
             transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
         }
 
-        /* EXTREME VISUALS: Damage Flash & Hard Shake */
-        .damage-flash {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(255, 0, 0, 0.5); z-index: 9999;
-            pointer-events: none; display: none;
-            animation: flashOut 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards;
-        }
-        @keyframes flashOut {
-            0% { opacity: 1; box-shadow: inset 0 0 200px rgba(255,0,0,1); }
-            100% { opacity: 0; box-shadow: inset 0 0 0 rgba(255,0,0,0); }
-        }
-
-        @keyframes shake-hard {
-            0% { transform: translate(3px, 3px) rotate(0deg); }
-            10% { transform: translate(-3px, -4px) rotate(-2deg); }
-            20% { transform: translate(-5px, 0px) rotate(2deg); }
-            30% { transform: translate(5px, 4px) rotate(0deg); }
-            40% { transform: translate(3px, -3px) rotate(2deg); }
-            50% { transform: translate(-3px, 4px) rotate(-2deg); }
-            60% { transform: translate(-5px, 2px) rotate(0deg); }
-            70% { transform: translate(5px, 2px) rotate(-2deg); }
-            80% { transform: translate(-3px, -3px) rotate(2deg); }
-            90% { transform: translate(3px, 4px) rotate(0deg); }
-            100% { transform: translate(1px, -4px) rotate(-2deg); }
-        }
-        body.shake-hard { animation: shake-hard 0.4s cubic-bezier(.36,.07,.19,.97) both; }
-        
-        /* Regular Shake */
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            25% { transform: translate(-1px, -2px) rotate(-1deg); }
-            50% { transform: translate(-3px, 0px) rotate(1deg); }
-            75% { transform: translate(3px, 2px) rotate(0deg); }
-            100% { transform: translate(1px, -1px) rotate(1deg); }
-        }
-        body.shake { animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both; }
-
         body.red-zone {
             box-shadow: inset 0 0 100px rgba(255, 0, 0, 0.4);
             border: 2px solid var(--neon-red);
@@ -159,6 +122,21 @@
             0% { box-shadow: inset 0 0 50px rgba(255, 0, 0, 0.3); }
             100% { box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.8); border: 2px solid var(--neon-red); }
         }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+        body.shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both infinite; }
 
         .dashboard {
             width: 100%;
@@ -181,26 +159,6 @@
             border-radius: 12px; border: 2px solid var(--neon-purple); box-shadow: 0 0 25px rgba(139, 92, 246, 0.2);
             position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; transition: 0.3s;
         }
-
-        /* COMBO METER UI */
-        .combo-container {
-            position: fixed;
-            bottom: 20px; right: 20px;
-            background: rgba(0, 0, 0, 0.85);
-            border: 3px solid var(--neon-orange);
-            padding: 15px 25px;
-            border-radius: 12px;
-            text-align: center;
-            z-index: 1000;
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
-            transform: scale(0);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .combo-container.active { transform: scale(1); animation: pulse-combo 1s infinite alternate; }
-        @keyframes pulse-combo { from { box-shadow: 0 0 10px var(--neon-orange); } to { box-shadow: 0 0 30px var(--neon-red); transform: scale(1.05); } }
-        .combo-text { font-family: 'Orbitron'; font-size: 2.5em; font-weight: 900; color: var(--gold); text-shadow: 2px 2px 0 #000; margin: 0; }
-        .combo-timer-bar { width: 100%; height: 8px; background: #333; margin-top: 10px; border-radius: 4px; overflow: hidden; }
-        .combo-timer-fill { height: 100%; width: 100%; background: var(--neon-orange); transition: width 1s linear; }
 
         .sprint-banner {
             background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
@@ -242,25 +200,7 @@
         .hp-bar-container { background: var(--inner-bg); border-radius: 5px; height: 10px; width: 100%; margin-top: 10px; overflow: hidden; position: relative; border: 1px solid var(--border-color);}
         .hp-bar { height: 100%; width: 100%; background: linear-gradient(90deg, #991b1b, var(--neon-red)); transition: width 0.3s ease-in-out; }
 
-        /* NEMESIS & PET GRID */
-        .companion-grid { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        
-        /* Shadow Nemesis UI */
-        .nemesis-box { background: linear-gradient(45deg, #111, #300); border: 2px solid var(--neon-red); border-radius: 10px; padding: 15px; position: relative; overflow: hidden;}
-        .nemesis-title { font-family: 'Orbitron'; color: var(--neon-red); font-weight: 900; margin-bottom: 10px; display: flex; justify-content: space-between;}
-        .versus-bar-container { width: 100%; height: 20px; background: var(--neon-blue); border-radius: 10px; overflow: hidden; display: flex; position: relative; border: 2px solid #000; box-shadow: 0 0 10px rgba(0,0,0,0.5);}
-        .versus-bar-nemesis { height: 100%; background: var(--neon-red); transition: width 0.5s; }
-        .versus-marker { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: white; z-index: 2; }
-
-        /* Tamagotchi Pet UI */
-        .pet-box { background: var(--card-bg); border: 2px solid var(--neon-green); border-radius: 10px; padding: 15px; text-align: center; position: relative;}
-        .pet-screen { background: #88cc88; border: 4px solid #558855; border-radius: 8px; width: 100%; height: 80px; margin: 10px auto; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', Courier, monospace; font-size: 2.5em; font-weight: bold; color: #113311; text-shadow: 2px 2px 0px rgba(0,0,0,0.1); box-shadow: inset 0 0 10px rgba(0,0,0,0.2); transition: 0.3s;}
-        .pet-screen.dead { background: #cc8888; color: #331111; }
-        .pet-feed-btn { background: var(--neon-green); color: black; font-weight: bold; padding: 5px 15px; border-radius: 5px; border: none; cursor: pointer; margin-top: 10px;}
-        .pet-hp-bar { height: 8px; background: #331111; width: 100%; border-radius: 4px; margin-top: 10px; overflow: hidden;}
-        .pet-hp-fill { height: 100%; background: #11ff11; transition: 0.3s;}
-
-        .vault-box { grid-column: span 2; background: var(--card-bg); border: 2px solid var(--gold); padding: 15px; border-radius: 8px; text-align: center; transition: 0.3s;}
+        .vault-box { grid-column: span 2; background: var(--card-bg); border: 2px solid var(--gold); padding: 15px; border-radius: 8px; text-align: center; margin-bottom: -5px; transition: 0.3s;}
         .vault-value { font-family: 'Orbitron'; font-size: 1.8em; color: var(--gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); font-weight: bold;}
         .vault-bleed { color: var(--neon-red); font-weight: bold; animation: fadeOutUp 2s forwards; display: none;}
         @keyframes fadeOutUp { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
@@ -293,7 +233,7 @@
         .loot-box { background: linear-gradient(135deg, #1e3a8a, #9333ea); border: 2px solid #38bdf8; text-align: center; padding: 20px; border-radius: 10px; cursor: pointer; animation: glow 2s infinite alternate; margin-top: 15px; position: relative;}
         @keyframes glow { from { box-shadow: 0 0 10px rgba(147, 51, 234, 0.5); } to { box-shadow: 0 0 30px rgba(56, 189, 248, 0.8); } }
 
-        .notification { position: fixed; top: 20px; right: 20px; background: var(--neon-green); color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; font-size: 1.1em; transform: translateX(150%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 10000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .notification { position: fixed; top: 20px; right: 20px; background: var(--neon-green); color: #000; padding: 15px 25px; border-radius: 8px; font-weight: bold; font-size: 1.1em; transform: translateX(150%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
         .flex-center { display: flex; align-items: center; }
 
@@ -340,11 +280,6 @@
         .skill-label { font-size: 0.9em; display: flex; justify-content: space-between; font-weight: bold; }
 
         .creator-studio { border: 2px solid var(--neon-pink); background: linear-gradient(to bottom, rgba(236, 72, 153, 0.05), transparent); display: none; }
-        
-        /* SUNKEN COST DECOR STUDIO */
-        .studio-decor-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--neon-pink);}
-        .decor-item { background: rgba(0,0,0,0.5); border: 1px solid var(--neon-pink); padding: 10px; border-radius: 8px; font-size: 2em; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 60px; height: 60px; box-shadow: 0 0 10px rgba(236,72,153,0.3);}
-        .decor-item span { font-size: 0.25em; font-family: 'Hind Siliguri'; color: #ccc; margin-top: 5px; text-align: center; line-height: 1.1;}
 
         .heatmap-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
         .heat-box { width: 70px; height: 50px; background: var(--inner-bg); border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75em; border: 1px solid var(--border-color); cursor: pointer; transition: 0.2s; box-sizing: border-box; }
@@ -410,20 +345,12 @@
             100% { border-color: #8b0000; } 
         }
 
-        @media (max-width: 768px) { .dashboard { grid-template-columns: 1fr; } .stats-container, .header, .flow-box, .vault-box, .companion-grid { grid-column: span 1; } .stats-container { grid-template-columns: 1fr 1fr; } .companion-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .dashboard { grid-template-columns: 1fr; } .stats-container, .header, .flow-box, .vault-box { grid-column: span 1; } .stats-container { grid-template-columns: 1fr 1fr; } }
     </style>
 </head>
 <body>
 
-<div class="damage-flash" id="damage-flash-ui"></div>
-
 <div class="red-zone-alert" id="red-zone-ui"><i class="fas fa-skull"></i> RED ZONE ACTIVE: Complete daily tasks or face Vault Bleed! <i class="fas fa-skull"></i></div>
-
-<div class="combo-container" id="combo-ui">
-    <div style="font-size: 0.9em; color: var(--text-main); font-weight:bold; letter-spacing: 2px;">ADRENALINE RUSH</div>
-    <div class="combo-text" id="combo-text-ui">COMBO x1</div>
-    <div class="combo-timer-bar"><div class="combo-timer-fill" id="combo-timer-fill-ui"></div></div>
-</div>
 
 <div class="notification" id="notif">Action Saved!</div>
 
@@ -506,37 +433,6 @@
             <button class="tool-btn" onclick="buyFreeze()" style="border-color: #3b82f6; color: #3b82f6;"><i class="fas fa-snowflake"></i> Buy Freeze (300 XP)</button>
             <button class="tool-btn" onclick="exportData()"><i class="fas fa-download"></i> Manual Backup</button>
             <button class="tool-btn" onclick="importData()"><i class="fas fa-upload"></i> Restore Backup</button>
-        </div>
-    </div>
-
-    <div class="companion-grid">
-        <!-- Shadow Nemesis -->
-        <div class="nemesis-box">
-            <div class="nemesis-title">
-                <span><i class="fas fa-ghost"></i> Shadow Nemesis</span>
-                <span id="nemesis-warning" style="color:var(--neon-orange); font-size:0.8em; display:none;">⚠️ IN LEAD! HP BLEEDING!</span>
-            </div>
-            <p style="font-size: 0.85em; color: var(--text-muted); margin-top:0;">The phantom of your procrastination grows stronger every minute.</p>
-            <div class="versus-bar-container">
-                <div class="versus-bar-nemesis" id="nemesis-bar"></div>
-                <div class="versus-marker"></div>
-            </div>
-            <div style="display:flex; justify-content:space-between; font-family:'Orbitron'; font-size:0.8em; margin-top:5px;">
-                <span style="color:var(--neon-red);" id="nemesis-xp-text">0 XP</span>
-                <span style="color:var(--neon-blue);" id="player-xp-text">0 XP</span>
-            </div>
-        </div>
-
-        <!-- Tamagotchi Pet -->
-        <div class="pet-box">
-            <div style="font-weight: bold; color: var(--neon-green); display:flex; justify-content:space-between;">
-                <span><i class="fas fa-dragon"></i> Dopamine Pet</span>
-                <span id="pet-level-text" style="color:var(--gold);">Lvl 1</span>
-            </div>
-            <div class="pet-screen" id="pet-face">( ^_^ )</div>
-            <div class="pet-hp-bar"><div class="pet-hp-fill" id="pet-hp-fill-ui"></div></div>
-            <button class="pet-feed-btn" onclick="feedPet()"><i class="fas fa-utensils"></i> Feed Pet (-50 Acad XP)</button>
-            <p style="font-size: 0.75em; color: var(--text-muted); margin: 5px 0 0 0;">Pet starves over time. Keep it alive!</p>
         </div>
     </div>
 
@@ -967,11 +863,6 @@
                     <button class="action-btn" style="background: var(--neon-purple); color:white;">Fund (-500 AX)</button>
                 </li>
             </ul>
-
-            <!-- SUNKEN COST: Studio Decorations -->
-            <div class="studio-decor-grid" id="studio-decor-ui">
-                <!-- Injected via JS -->
-            </div>
         </div>
 
         <div style="background: rgba(16, 185, 129, 0.1); border: 1px dashed var(--neon-green); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
@@ -983,20 +874,6 @@
         
         <div class="scrollable-list" style="max-height: 250px;">
             <ul class="shop-grid">
-                <!-- Studio Decoration Items -->
-                <li class="shop-item" onclick="buyDecor(500, 'Neon Studio Lights', 'fa-lightbulb')">
-                    <div class="flex-center"><i class="fas fa-lightbulb shop-icon" style="color:var(--neon-pink);"></i> <div><strong>Neon Studio Lights</strong><br><small>Decorate your Creator Studio</small></div></div>
-                    <div class="price">500 XP</div>
-                </li>
-                <li class="shop-item" onclick="buyDecor(800, 'Acoustic Panels', 'fa-border-all')">
-                    <div class="flex-center"><i class="fas fa-border-all shop-icon" style="color:var(--neon-blue);"></i> <div><strong>Acoustic Panels</strong><br><small>Decorate your Creator Studio</small></div></div>
-                    <div class="price">800 XP</div>
-                </li>
-                <li class="shop-item" onclick="buyDecor(1200, '4K Camera Setup', 'fa-video')">
-                    <div class="flex-center"><i class="fas fa-video shop-icon" style="color:var(--gold);"></i> <div><strong>4K Camera Setup</strong><br><small>Decorate your Creator Studio</small></div></div>
-                    <div class="price">1200 XP</div>
-                </li>
-
                 <li class="shop-item" onclick="buyToInventory(1000, 'Adrenaline Syringe (Revive)')">
                     <div class="flex-center"><i class="fas fa-syringe shop-icon" style="color:var(--neon-green);"></i> <div><strong>Adrenaline Syringe (Revive)</strong><br><small>Streak জিরো হওয়ার হাত থেকে বাঁচায়</small></div></div>
                     <div class="price">1000 XP</div>
@@ -1112,10 +989,7 @@
         
         gachaPityCounter: 0,
         urgeSuccessCount: 0,
-        trophies: [],
-        
-        // NEW PROPERTIES
-        petHealth: 100, petLevel: 1, lastLoginTimestamp: Date.now(), nemesisXP: 0, studioDecorations: []
+        trophies: []
     };
     let db = defaultDb;
     
@@ -1129,23 +1003,6 @@
     if(!db.dailyStudyMinutes) db.dailyStudyMinutes = {};
     if(!db.trophies) db.trophies = [];
     if(!db.namaz) db.namaz = { Fajr: false, Dhuhr: false, Asr: false, Maghrib: false, Isha: false };
-    if(!db.studioDecorations) db.studioDecorations = [];
-    if(typeof db.nemesisXP === 'undefined') db.nemesisXP = 0;
-    if(typeof db.petHealth === 'undefined') db.petHealth = 100;
-    if(typeof db.lastLoginTimestamp === 'undefined') db.lastLoginTimestamp = Date.now();
-
-    // Pet & Nemesis Offline Calculation
-    let nowTimestamp = Date.now();
-    let elapsedHours = (nowTimestamp - db.lastLoginTimestamp) / (1000 * 60 * 60);
-    if(elapsedHours > 0) {
-        db.nemesisXP += Math.floor(elapsedHours * 80); // Nemesis gains 80 XP per offline hour
-        db.petHealth = Math.max(0, db.petHealth - Math.floor(elapsedHours * 5)); // Pet loses 5 HP per hour
-    }
-    db.lastLoginTimestamp = nowTimestamp;
-
-    let currentCombo = 0;
-    let comboTimeLeft = 0;
-    let comboIntervalVal = null;
 
     const availableTrophies = [
         { id: 'night_owl', name: 'Night Owl', desc: 'Studied past 2 AM', icon: 'fa-moon' },
@@ -1191,7 +1048,6 @@
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
             const osc = ctx.createOscillator(); const gain = ctx.createGain();
             osc.connect(gain); gain.connect(ctx.destination);
-            
             if(type === 'coin') {
                 osc.type = 'sine'; osc.frequency.setValueAtTime(800, ctx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
@@ -1221,25 +1077,6 @@
                 gain.gain.setValueAtTime(0.5, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
                 osc.start(); osc.stop(ctx.currentTime + 0.3);
-            } else if(type === 'casinoSpin') {
-                osc.type = 'square'; osc.frequency.setValueAtTime(800, ctx.currentTime);
-                osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.05);
-                osc.frequency.setValueAtTime(1600, ctx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.1, ctx.currentTime);
-                osc.start(); osc.stop(ctx.currentTime + 0.15);
-            } else if(type === 'casinoWin') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-                osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
-                osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2); // G5
-                osc.frequency.setValueAtTime(1046.50, ctx.currentTime + 0.3); // C6
-                gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
-                osc.start(); osc.stop(ctx.currentTime + 0.8);
-            } else if(type === 'comboTick') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(1000, ctx.currentTime);
-                gain.gain.setValueAtTime(0.05, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-                osc.start(); osc.stop(ctx.currentTime + 0.05);
             }
         } catch(e) {}
     }
@@ -1303,7 +1140,7 @@
         let btn = document.getElementById('btn-save-cloud'); let originalText = btn.innerHTML; btn.innerText = "Saving...";
         try {
             let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY }, body: JSON.stringify(db) });
-            if(res.ok) { notify("Cloud Save Successful! ☁️", "var(--neon-green)"); playSound('casinoWin'); } else { notify("Cloud Save Failed!", "var(--neon-red)"); }
+            if(res.ok) { notify("Cloud Save Successful! ☁️", "var(--neon-green)"); playSound('coin'); } else { notify("Cloud Save Failed!", "var(--neon-red)"); }
         } catch(e) { notify("Network Error!", "var(--neon-red)"); }
         btn.innerHTML = originalText;
     }
@@ -1313,36 +1150,18 @@
         let btn = document.getElementById('btn-load-cloud'); let originalText = btn.innerHTML; btn.innerText = "Loading...";
         try {
             let res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, { method: 'GET', headers: { 'X-Master-Key': JSONBIN_API_KEY } });
-            if(res.ok) { let data = await res.json(); db = { ...defaultDb, ...data.record }; save(); loadMission(); notify("Cloud Data Loaded! ☁️", "var(--neon-blue)"); playSound('casinoWin'); } else { notify("Cloud Load Failed!", "var(--neon-red)"); }
+            if(res.ok) { let data = await res.json(); db = { ...defaultDb, ...data.record }; save(); loadMission(); notify("Cloud Data Loaded! ☁️", "var(--neon-blue)"); playSound('levelUp'); } else { notify("Cloud Load Failed!", "var(--neon-red)"); }
         } catch(e) { notify("Network Error!", "var(--neon-red)"); }
         btn.innerHTML = originalText;
     }
 
-    function save() { 
-        db.lastLoginTimestamp = Date.now();
-        localStorage.setItem('lordV8', JSON.stringify(db)); 
-        updateUI(); 
-    }
+    function save() { localStorage.setItem('lordV8', JSON.stringify(db)); updateUI(); }
 
     function triggerVaultBleed(amount) {
         db.vaultXP = Math.max(0, db.vaultXP - amount);
         let anim = document.getElementById('vault-bleed-anim');
         anim.innerText = `-${amount} XP BLEED!`; anim.style.display = 'block';
         setTimeout(() => { anim.style.display = 'none'; }, 2000);
-    }
-
-    function triggerDamageFlash() {
-        let flash = document.getElementById('damage-flash-ui');
-        flash.style.display = 'block';
-        flash.style.animation = 'none';
-        flash.offsetHeight; /* trigger reflow */
-        flash.style.animation = null; 
-        setTimeout(() => flash.style.display = 'none', 600);
-        
-        document.body.classList.remove('shake-hard');
-        void document.body.offsetWidth;
-        document.body.classList.add('shake-hard');
-        setTimeout(() => document.body.classList.remove('shake-hard'), 400);
     }
 
     function addStudyTime(minutes) {
@@ -1352,29 +1171,17 @@
         save();
     }
 
-    // Interval Updates (Nemesis & Red Zone)
-    setInterval(() => {
-        // Red Zone check
+    function checkRedZone() {
         let now = new Date(); let hour = now.getHours();
         let tasksComplete = isDailyTasksComplete();
         if ((hour >= 22 || hour === 0) && !tasksComplete) { 
             document.body.classList.add('red-zone'); document.getElementById('red-zone-ui').style.display = 'block';
-            if(hour === 0 && now.getMinutes() === 0) { triggerVaultBleed(500); notify("Midnight Vault Bleed! Tasks incomplete!", "var(--neon-red)"); playSound('error'); triggerDamageFlash(); }
+            if(hour === 0 && now.getMinutes() === 0) { triggerVaultBleed(500); notify("Midnight Vault Bleed! Tasks incomplete!", "var(--neon-red)"); playSound('error'); }
         } else {
             document.body.classList.remove('red-zone'); document.getElementById('red-zone-ui').style.display = 'none';
         }
-        
-        // Nemesis & Pet Passive Update (Every Minute)
-        db.nemesisXP += 2;
-        if(db.nemesisXP > db.xp) {
-            db.hp -= 1;
-            notify("Nemesis is ahead! HP Bleeding!", "var(--neon-red)");
-            playSound('error');
-            triggerDamageFlash();
-        }
-        db.petHealth = Math.max(0, db.petHealth - 0.1); // Slowly starves
-        save();
-    }, 60000);
+    }
+    setInterval(checkRedZone, 60000); checkRedZone();
 
     function checkBlackMarket() {
         let hour = new Date().getHours();
@@ -1391,7 +1198,7 @@
             db.xp -= costXP;
             db.hp -= costHP;
             db.inventory.push(item);
-            playSound('casinoWin'); 
+            playSound('coin'); 
             notify(`Illicit Deal Struck: ${item} (-${costHP} HP)`, "var(--neon-red)");
             save();
         } else {
@@ -1475,68 +1282,6 @@
         save();
     }
 
-    function feedPet() {
-        if(db.academicXP >= 50) {
-            db.academicXP -= 50;
-            db.petHealth = Math.min(100, db.petHealth + 30);
-            playSound('levelUp');
-            notify("Fed Dopamine Pet!", "var(--neon-green)");
-            save();
-        } else {
-            playSound('error');
-            notify("Need 50 Academic XP to feed pet!", "var(--neon-red)");
-        }
-    }
-
-    function buyDecor(cost, name, icon) {
-        if(db.xp >= cost) {
-            let existing = db.studioDecorations.find(d => d.name === name);
-            if(existing) {
-                notify("Already own this decoration!", "var(--neon-orange)");
-                return;
-            }
-            db.xp -= cost;
-            db.studioDecorations.push({name, icon});
-            playSound('casinoWin');
-            notify("Purchased Studio Decor: " + name, "var(--neon-pink)");
-            save();
-        } else {
-            playSound('error');
-            notify("Not enough XP for decoration!", "var(--neon-red)");
-        }
-    }
-
-    function triggerComboAction() {
-        currentCombo++;
-        comboTimeLeft = 600; // 10 minutes
-        document.getElementById('combo-ui').classList.add('active');
-        document.getElementById('combo-text-ui').innerText = `COMBO x${currentCombo}!`;
-        playSound('comboTick');
-        
-        if(!comboIntervalVal) {
-            comboIntervalVal = setInterval(() => {
-                comboTimeLeft--;
-                let pct = (comboTimeLeft / 600) * 100;
-                document.getElementById('combo-timer-fill-ui').style.width = pct + "%";
-                
-                if(comboTimeLeft < 60 && comboTimeLeft % 2 === 0) {
-                    playSound('comboTick');
-                    document.getElementById('combo-ui').style.borderColor = "var(--neon-red)";
-                } else if (comboTimeLeft >= 60) {
-                    document.getElementById('combo-ui').style.borderColor = "var(--neon-orange)";
-                }
-
-                if(comboTimeLeft <= 0) {
-                    clearInterval(comboIntervalVal);
-                    comboIntervalVal = null;
-                    currentCombo = 0;
-                    document.getElementById('combo-ui').classList.remove('active');
-                    notify("Combo Broken!", "var(--neon-red)");
-                }
-            }, 1000);
-        }
-    }
-
     function updateUI() {
         updateSprintUI(); 
         manageDynamicAudio();
@@ -1576,9 +1321,6 @@
         const diffDays = Math.ceil(Math.abs(new Date() - new Date('2026-05-13')) / (1000 * 60 * 60 * 24));
         let sprintBonus = 1.0 + (Math.min(33, Math.max(1, diffDays)) * 0.01);
         mult = mult * sprintBonus;
-        
-        // Add combo multiplier
-        if(currentCombo > 0) mult += (currentCombo * 0.1);
 
         if(Date.now() < db.relapseTimer) { 
             document.getElementById('relapse-warning').style.display = "block"; 
@@ -1603,7 +1345,7 @@
         document.getElementById('rank-name').innerText = rank;
 
         let newLvl = Math.floor(db.xp / 600) + 1;
-        if(newLvl > db.level) { db.level = newLvl; playSound('casinoWin'); confetti({particleCount: 150, spread: 80, origin: {y: 0.6}}); notify("LEVEL UP! You are now Level " + db.level, "var(--neon-blue)"); }
+        if(newLvl > db.level) { db.level = newLvl; playSound('levelUp'); confetti({particleCount: 150, spread: 80, origin: {y: 0.6}}); notify("LEVEL UP! You are now Level " + db.level, "var(--neon-blue)"); }
 
         if(db.streak >= 7) { document.getElementById('badge-streak').style.display = "inline-block"; document.getElementById('main-dashboard').classList.add('streak-7'); } else { document.getElementById('main-dashboard').classList.remove('streak-7'); }
         if(db.streak >= 14) { document.getElementById('main-dashboard').classList.add('streak-14'); } else { document.getElementById('main-dashboard').classList.remove('streak-14'); }
@@ -1642,35 +1384,6 @@
 
         document.getElementById('pity-counter-text').innerText = `Pity: ${db.gachaPityCounter}/5 (Guaranteed Drop at 5)`;
 
-        // Nemesis update
-        document.getElementById('nemesis-xp-text').innerText = db.nemesisXP + " XP";
-        document.getElementById('player-xp-text').innerText = db.xp + " XP";
-        let nemTotal = Math.max(db.xp, db.nemesisXP, 1);
-        document.getElementById('nemesis-bar').style.width = (db.nemesisXP / nemTotal * 100) + "%";
-        document.querySelector('.versus-marker').style.left = (db.xp / nemTotal * 100) + "%";
-        if(db.nemesisXP > db.xp) document.getElementById('nemesis-warning').style.display = "inline-block";
-        else document.getElementById('nemesis-warning').style.display = "none";
-
-        // Pet update
-        let face = "( ^_^ )"; let faceClass = "pet-screen";
-        if(db.petHealth <= 0) { face = "( x_x )"; faceClass = "pet-screen dead"; }
-        else if(db.petHealth < 30) face = "( >_< )";
-        else if(db.petHealth < 70) face = "( -_- )";
-        document.getElementById('pet-face').innerText = face;
-        document.getElementById('pet-face').className = faceClass;
-        document.getElementById('pet-hp-fill-ui').style.width = db.petHealth + "%";
-
-        // Studio Decor update
-        let decorHtml = '';
-        if(db.studioDecorations.length === 0) {
-            decorHtml = `<span style="color:var(--text-muted); font-size:0.8em; width:100%;">Buy decorations from Store to build your studio!</span>`;
-        } else {
-            db.studioDecorations.forEach(d => {
-                decorHtml += `<div class="decor-item"><i class="fas ${d.icon}"></i><span>${d.name}</span></div>`;
-            });
-        }
-        document.getElementById('studio-decor-ui').innerHTML = decorHtml;
-
         renderInventory(); updateSkillTrees(); renderChart(); renderHeatmap(); renderClues(); checkRedZone(); renderTrophies();
     }
 
@@ -1694,6 +1407,8 @@
     function simulateDistraction() {
         if(extensionLinked) {
             applyPenalty(15, 10, "BLOCKER ALERT: Social Media Detected!");
+            document.body.classList.add('shake');
+            setTimeout(() => document.body.classList.remove('shake'), 500);
         }
     }
 
@@ -1705,7 +1420,7 @@
 
     function addFlow(amount) {
         if(db.frenzyCharges > 0) return; db.flowPoints += amount;
-        if(db.flowPoints >= 100) { db.flowPoints = 0; db.frenzyCharges = 5; playSound('casinoWin'); confetti({particleCount: 200, spread: 100, origin: {y: 0.5}, colors: ['#ec4899', '#8b5cf6']}); notify("🔥 FLOW STATE FRENZY! 2x XP for next 5 Actions!", "var(--neon-pink)"); }
+        if(db.flowPoints >= 100) { db.flowPoints = 0; db.frenzyCharges = 5; playSound('levelUp'); confetti({particleCount: 200, spread: 100, origin: {y: 0.5}, colors: ['#ec4899', '#8b5cf6']}); notify("🔥 FLOW STATE FRENZY! 2x XP for next 5 Actions!", "var(--neon-pink)"); }
         save();
     }
 
@@ -1750,7 +1465,7 @@
         if(db.cluesFound >= trueCrimeClues.length && !db.bossDefeated) { document.getElementById('solve-mystery-btn').style.display = "block"; } else { document.getElementById('solve-mystery-btn').style.display = "none"; }
     }
 
-    function solveMystery() { db.xp += 1000; db.cluesFound = 0; playSound('casinoWin'); confetti({particleCount: 400, spread: 120, origin: {y: 0.5}}); notify("Mystery Solved! 'The Physics Professor Did It'. +1000 XP!", "var(--neon-purple)"); save(); }
+    function solveMystery() { db.xp += 1000; db.cluesFound = 0; playSound('levelUp'); confetti({particleCount: 400, spread: 120, origin: {y: 0.5}}); notify("Mystery Solved! 'The Physics Professor Did It'. +1000 XP!", "var(--neon-purple)"); save(); }
 
     function notify(msg, color) { let n = document.getElementById('notif'); n.innerText = msg; n.style.background = color || "var(--neon-green)"; n.style.transform = "translateX(0)"; setTimeout(() => n.style.transform = "translateX(150%)", 3000); }
 
@@ -1762,19 +1477,14 @@
         let sprintBonus = 1.0 + (Math.min(33, Math.max(1, diffDays)) * 0.01);
         mult = mult * sprintBonus; 
 
-        if(currentCombo > 0) mult += (currentCombo * 0.1);
-
         if(db.dopamineHitsToday > 2) mult = mult * 0.5; if(Date.now() < db.relapseTimer) mult = mult * 0.5; 
         let earned = Math.floor(base * mult);
         if(db.frenzyCharges > 0 && earned > 0) { earned *= 2; db.frenzyCharges--; }
-        
         db.xp += earned; db.streak += 1;
         if(skillType === 'academic') db.academicXP += earned;
         if(skillType === 'creator') { db.creatorXP += earned; let subGain = Math.floor(Math.random() * 15) + 5; db.subscribers += subGain; notify(`+${earned} XP & +${subGain} Subs: ${msg}`); } else { notify("+" + earned + " XP: " + msg); }
         let todayStr = new Date().toISOString().split('T')[0]; db.dailyHistory[todayStr] = (db.dailyHistory[todayStr] || 0) + earned;
         if(db.unlockedThemes.includes('true-crime') && Math.random() > 0.8 && db.cluesFound < trueCrimeClues.length) { db.cluesFound++; setTimeout(() => notify("🔍 New True Crime Clue Found!", "var(--neon-purple)"), 1500); }
-        
-        if (earned > 0) triggerComboAction();
         save();
     }
 
@@ -1789,13 +1499,12 @@
     function recoverHP(amount, msg) { db.hp = Math.min(db.maxHp, db.hp + amount); playSound('levelUp'); notify(msg, "var(--neon-green)"); save(); }
 
     function handleDeath() {
-        playSound('error'); triggerDamageFlash(); alert("CRITICAL FAILURE! HP Reached 0. You have burnt out.\nPenalty: Level Reset to 1, XP Halved, Inventory Cleared.");
+        playSound('error'); alert("CRITICAL FAILURE! HP Reached 0. You have burnt out.\nPenalty: Level Reset to 1, XP Halved, Inventory Cleared.");
         db.hp = db.maxHp; db.level = 1; db.xp = Math.floor(db.xp / 2); db.inventory = []; db.streak = 0; save();
     }
 
     function applyPenalty(amountXP, amountHP, reason) {
         db.xp -= amountXP; db.hp -= amountHP; playSound('error'); notify("Penalty: " + reason + " (-" + amountXP + " XP, -" + amountHP + " HP)", "var(--neon-red)");
-        triggerDamageFlash();
         if(db.hp <= 0) handleDeath(); else save();
     }
 
@@ -1804,7 +1513,6 @@
         db.xp = Math.max(0, db.xp - penaltyXP); db.hp -= penaltyHP; db.relapseTimer = Date.now() + (24 * 60 * 60 * 1000); db.streak = 0; 
         triggerVaultBleed(2000); 
         playSound('error'); notify("⚠️ RELAPSE! Massive Vault Bleed & 50% XP Penalty for 24h!", "var(--neon-red)");
-        triggerDamageFlash();
         if(db.hp <= 0) handleDeath(); else save();
     }
 
@@ -1820,7 +1528,7 @@
     }, 60000); 
 
     function buyTheme(themeId, cost, name) {
-        if(db.xp >= cost) { db.xp -= cost; db.unlockedThemes.push(themeId); playSound('casinoWin'); notify("Theme Unlocked: " + name, "var(--neon-purple)"); setTheme(themeId); save(); } 
+        if(db.xp >= cost) { db.xp -= cost; db.unlockedThemes.push(themeId); playSound('levelUp'); notify("Theme Unlocked: " + name, "var(--neon-purple)"); setTheme(themeId); save(); } 
         else { playSound('error'); notify("Need " + cost + " XP to unlock this theme!", "var(--neon-red)"); }
     }
 
@@ -1828,19 +1536,19 @@
 
     function unlockMusic() {
         if(db.musicUnlocked) { notify("Already unlocked!", "var(--neon-blue)"); return; }
-        if(db.xp >= 300) { db.xp -= 300; db.musicUnlocked = true; playSound('casinoWin'); notify("🎶 Custom Focus Music & Lofi Mixer Unlocked!", "var(--neon-purple)"); save(); } 
+        if(db.xp >= 300) { db.xp -= 300; db.musicUnlocked = true; playSound('levelUp'); notify("🎶 Custom Focus Music & Lofi Mixer Unlocked!", "var(--neon-purple)"); save(); } 
         else { playSound('error'); notify("Need 300 XP to unlock music!", "var(--neon-red)"); }
     }
 
     function changeMusic() { let sel = document.getElementById('music-selector').value; let aud = document.getElementById('focus-audio'); aud.src = sel; if(isRunning) aud.play(); }
 
-    function showGoldenTicket() { document.getElementById('ticket-modal').style.display = "flex"; document.getElementById('slot-result').innerText = "READY TO SPIN"; document.getElementById('spin-btn').style.display = "block"; document.getElementById('claim-btn').style.display = "none"; playSound('casinoSpin'); }
+    function showGoldenTicket() { document.getElementById('ticket-modal').style.display = "flex"; document.getElementById('slot-result').innerText = "READY TO SPIN"; document.getElementById('spin-btn').style.display = "block"; document.getElementById('claim-btn').style.display = "none"; playSound('levelUp'); }
 
     function spinRoulette() {
-        let btn = document.getElementById('spin-btn'); btn.style.display = "none"; playSound('casinoSpin'); let slot = document.getElementById('slot-result'); let spins = 0;
+        let btn = document.getElementById('spin-btn'); btn.style.display = "none"; playSound('coin'); let slot = document.getElementById('slot-result'); let spins = 0;
         let interval = setInterval(() => {
             slot.innerText = spinWheelOptions[Math.floor(Math.random() * spinWheelOptions.length)]; spins++;
-            if(spins > 20) { clearInterval(interval); playSound('casinoWin'); let finalPick = spinWheelOptions[Math.floor(Math.random() * spinWheelOptions.length)]; slot.innerText = "🏆 " + finalPick; slot.style.color = "gold"; confetti({particleCount: 300, spread: 150, origin: {y: 0.5}, colors: ['#ffd700', '#ffffff']}); document.getElementById('claim-btn').style.display = "block"; }
+            if(spins > 20) { clearInterval(interval); let finalPick = spinWheelOptions[Math.floor(Math.random() * spinWheelOptions.length)]; slot.innerText = "🏆 " + finalPick; slot.style.color = "gold"; confetti({particleCount: 300, spread: 150, origin: {y: 0.5}, colors: ['#ffd700', '#ffffff']}); document.getElementById('claim-btn').style.display = "block"; }
         }, 100);
     }
 
@@ -1872,7 +1580,7 @@
             updateUI();
             
             document.getElementById('gacha-overlay').style.display = 'flex';
-            playSound('casinoSpin'); 
+            playSound('boss'); 
             
             setTimeout(() => {
                 document.getElementById('gacha-overlay').style.display = 'none';
@@ -1886,12 +1594,12 @@
                 if(roll > 0.98) { 
                     db.inventory.push("🏆 LEGENDARY: CHEAT MEAL PASS"); 
                     db.gachaPityCounter = 0;
-                    playSound('casinoWin'); confetti({particleCount: 300, spread: 150, origin: {y: 0.5}}); notify("🔥 MYTHIC DROP! Cheat Meal Unlocked!", "#fbbf24"); 
+                    playSound('levelUp'); confetti({particleCount: 300, spread: 150, origin: {y: 0.5}}); notify("🔥 MYTHIC DROP! Cheat Meal Unlocked!", "#fbbf24"); 
                 }
                 else if(roll > 0.85) { 
                     db.xp += 350; db.gachaJackpots += 1; 
                     db.gachaPityCounter = 0; 
-                    playSound('casinoWin'); confetti({particleCount: 200, spread: 100, origin: {y: 0.5}}); notify("🎉 MEGA JACKPOT! +350 XP", "var(--neon-purple)"); 
+                    playSound('levelUp'); confetti({particleCount: 200, spread: 100, origin: {y: 0.5}}); notify("🎉 MEGA JACKPOT! +350 XP", "var(--neon-purple)"); 
                 }
                 else if(roll > 0.6) { 
                     db.xp += 150; 
@@ -1918,12 +1626,12 @@
         }
 
         if(db.freeze > 0) { db.freeze -= 1; notify("❄️ Streak Saved by Freeze!", "#3b82f6"); } 
-        else { db.streak = 0; db.xp = Math.max(0, db.xp - 30); db.hp -= 10; triggerVaultBleed(500); playSound('error'); triggerDamageFlash(); notify("Streak Broken! Vault Bleed -500 XP, -10 HP.", "var(--neon-red)"); if(db.hp <= 0) handleDeath(); }
+        else { db.streak = 0; db.xp = Math.max(0, db.xp - 30); db.hp -= 10; triggerVaultBleed(500); playSound('error'); notify("Streak Broken! Vault Bleed -500 XP, -10 HP.", "var(--neon-red)"); if(db.hp <= 0) handleDeath(); }
         save(); 
     }
 
     function claimVault() {
-        if(db.vaultXP > 0) { db.xp += db.vaultXP; db.vaultXP = 0; playSound('casinoWin'); confetti({particleCount: 1000, spread: 360, origin: {y: 0.5}}); notify("💰 ESCROW VAULT CLAIMED! MASSIVE XP GAIN!", "gold"); save(); }
+        if(db.vaultXP > 0) { db.xp += db.vaultXP; db.vaultXP = 0; playSound('levelUp'); confetti({particleCount: 1000, spread: 360, origin: {y: 0.5}}); notify("💰 ESCROW VAULT CLAIMED! MASSIVE XP GAIN!", "gold"); save(); }
     }
 
     function unlockTrophy(id) {
@@ -1931,7 +1639,7 @@
             db.trophies.push(id);
             let t = availableTrophies.find(x => x.id === id);
             if(t) {
-                playSound('casinoWin');
+                playSound('levelUp');
                 notify(`🏆 ACHIEVEMENT UNLOCKED: ${t.name}!`, "gold");
             }
             save();
@@ -2066,12 +1774,12 @@
             if(isFinal) { 
                 db.xp -= 1000; db.bossDefeated = true; db.subscribers += 25000; 
                 unlockTrophy('boss_slayer');
-                playSound('casinoWin'); confetti({particleCount: 500, spread: 160, origin: {y: 0.3}});
+                playSound('levelUp'); confetti({particleCount: 500, spread: 160, origin: {y: 0.3}});
                 notify("🏆 FINAL BOSS DEFEATED! ESCROW VAULT UNLOCKED!", "gold");
                 document.getElementById('final-boss-btn').innerText = "BOSS DEFEATED!";
             } else { 
                 db.xp -= 300; db.xp += 500; db.inventory.push("🎁 Mini-Boss Legendary Loot Box"); db.subscribers += 5000; 
-                playSound('casinoWin'); confetti({particleCount: 250, spread: 100, origin: {y: 0.4}});
+                playSound('levelUp'); confetti({particleCount: 250, spread: 100, origin: {y: 0.4}});
                 notify("🏆 Mini-Boss Defeated! +500 XP & +5,000 Subs!", "var(--neon-orange)");
             }
             save();
@@ -2087,7 +1795,6 @@
         db.hp -= dmg;
         db.xp -= xpCost; 
         playSound('error');
-        triggerDamageFlash();
         notify("💥 BOSS STRIKE! Wrong answer/Timeout. -" + dmg + " HP!", "var(--neon-red)");
         if(db.hp <= 0) handleDeath(); else save();
     }
@@ -2150,7 +1857,7 @@
                 else if (roll > 0.90) { db.inventory.push("15 Min Free Media"); addXP(50, "Epic Pomodoro Drop!", "general"); notify("Loot Dropped: 15 Min Media Pass!", "var(--neon-purple)"); } 
                 else if (roll > 0.70) { addXP(100, "Critical Focus Drop!", "general"); } 
                 else { addXP(50, "Focus Session Complete!", "general"); }
-                playSound('casinoWin');
+                playSound('levelUp');
             }
         }, 1000);
     }
@@ -2176,7 +1883,7 @@
                 db.urgeSuccessCount = (db.urgeSuccessCount || 0) + 1;
                 if(db.urgeSuccessCount >= 3) { unlockTrophy('iron_mind'); }
                 
-                playSound('casinoWin'); 
+                playSound('levelUp'); 
             } 
         }, 1000);
     }
