@@ -837,34 +837,6 @@
             </div>
         </div>
 
-        <div class="card creator-studio" id="creator-studio-ui" style="margin-bottom: 20px;">
-            <h2><i class="fas fa-video"></i> Ed-Tech Tycoon Studio</h2>
-            
-            <div class="tycoon-stats">
-                <div><i class="fas fa-users" style="color:var(--neon-pink);"></i> Enrolled Students / Subs:</div>
-                <div class="sub-count" id="subscriber-count">0</div>
-            </div>
-            <p style="font-size: 0.8em; color: var(--neon-red); margin-bottom:15px; font-weight:bold;">[TEMPTATION BUNDLING]: Fund these projects using ACADEMIC XP gained from studying Math & Physics!</p>
-
-            <ul class="action-list">
-                <li class="action-item" onclick="doCreatorHustle(150, 100, 'Script Written!')">
-                    <div class="flex-center"><i class="fas fa-pen-nib" style="color:var(--neon-pink); margin-right:10px;"></i>
-                    <div><strong>Write Video Script</strong><br><small>Cost: 150 Academic XP</small></div></div>
-                    <button class="action-btn" style="background: var(--neon-purple); color:white;">Fund (-150 AX)</button>
-                </li>
-                <li class="action-item" onclick="doCreatorHustle(300, 200, 'Video Recorded!')">
-                    <div class="flex-center"><i class="fas fa-camera" style="color:var(--neon-pink); margin-right:10px;"></i>
-                    <div><strong>Shoot Full Video</strong><br><small>Cost: 300 Academic XP</small></div></div>
-                    <button class="action-btn" style="background: var(--neon-purple); color:white;">Fund (-300 AX)</button>
-                </li>
-                <li class="action-item" onclick="doCreatorHustle(500, 400, 'Video Published!')">
-                    <div class="flex-center"><i class="fas fa-upload" style="color:var(--neon-green); margin-right:10px;"></i>
-                    <div><strong>Publish to YouTube</strong><br><small>Cost: 500 Academic XP</small></div></div>
-                    <button class="action-btn" style="background: var(--neon-purple); color:white;">Fund (-500 AX)</button>
-                </li>
-            </ul>
-        </div>
-
         <div style="background: rgba(16, 185, 129, 0.1); border: 1px dashed var(--neon-green); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
             <h3 style="color: var(--neon-green); margin-top:0; font-size: 1.1em;"><i class="fas fa-calendar-check"></i> Daily Quests</h3>
             <ul class="action-list" id="daily-quests-list"></ul>
@@ -1372,7 +1344,7 @@
         if(db.unlockedThemes.includes('true-crime')) { document.getElementById('shop-theme-crime').style.display = "none"; document.getElementById('btn-theme-crime').style.display = "inline-block"; document.getElementById('mystery-log-ui').style.display = "block"; }
         if(db.unlockedThemes.includes('midwest-emo')) { document.getElementById('shop-theme-emo').style.display = "none"; document.getElementById('btn-theme-emo').style.display = "inline-block"; }
 
-        if(db.creatorXP >= 500 || db.level >= 5 || db.creatorUnlocked) { db.creatorUnlocked = true; document.getElementById('creator-studio-ui').style.display = "block"; document.getElementById('subscriber-count').innerText = db.subscribers.toLocaleString(); }
+        if(db.creatorXP >= 500 || db.level >= 5 || db.creatorUnlocked) { db.creatorUnlocked = true; }
 
         let completedCount = 0;
         for(let k in db.completedTasks) { if(db.completedTasks[k] === true) completedCount++; }
@@ -1939,7 +1911,7 @@
     }
 
     autoSelectNextMission(); 
-    loadMission();           
+    loadMission();            
     renderQuests(); 
     updateUI();
 </script>
